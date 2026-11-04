@@ -12,28 +12,36 @@ header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);pad
 header h1{font-size:18px;max-width:640px;margin:0 auto}
 main{padding:16px;padding-bottom:170px;max-width:640px;margin:0 auto}
 nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
-nav button{flex:1;background:none;border:0;color:var(--sub);padding:9px 0 7px;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button{flex:1;min-width:0;background:none;border:0;color:var(--sub);padding:9px 0 7px;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px;white-space:nowrap}
 nav button .i{font-size:20px}
 nav button.on{color:var(--accent)}
 .card{background:var(--card);border-radius:14px;padding:14px;margin-bottom:12px}
-.btn{background:var(--card2);color:var(--text);border:0;border-radius:10px;padding:11px 14px;font-size:14px;font-weight:600}
+.card2{background:var(--card2);border-radius:12px;padding:12px;margin-top:10px}
+.btn{background:var(--card2);color:var(--text);border:0;border-radius:10px;padding:11px 14px;font-size:14px;font-weight:600;text-align:center}
 .btn.p{background:var(--accent);color:var(--white)}
 .btn.ok{background:var(--ok);color:var(--white)}
 .btn.d{color:var(--danger)}
 .btn.dz{background:var(--danger);color:var(--white)}
 .btn.sm{padding:6px 10px;font-size:13px}
-.full{width:100%}
+.btn:disabled{opacity:.4}
+.full{width:100%;display:block}
 .btn.full{padding:14px}
 .row{display:flex;gap:8px;align-items:center}
 .between{justify-content:space-between}
 .grow{flex:1;min-width:0}
 .mt{margin-top:10px}
+.c{text-align:center}
 .sub{color:var(--sub);font-size:12px}
+.err{color:var(--danger)}
 .sec{color:var(--sub);font-size:13px;font-weight:700;margin:18px 2px 8px}
 .empty{color:var(--sub);text-align:center;padding:28px 0}
 .tag{background:var(--card2);color:var(--sub);font-size:11px;padding:2px 8px;border-radius:99px;white-space:nowrap}
 .icon{background:none;border:0;color:var(--sub);font-size:18px;width:32px;height:32px;border-radius:8px;flex:none}
-.inp{background:var(--card2);border:0;border-radius:10px;color:var(--text);padding:11px 12px;font-size:16px;min-width:0}
+.inp{background:var(--card2);border:0;border-radius:10px;color:var(--text);padding:11px 12px;font-size:16px;min-width:0;width:100%}
+.row .inp{width:auto}
+.row .inp.grow{width:100%}
+p{line-height:1.7;font-size:14px}
+ul{padding-left:18px;margin-top:6px;font-size:14px;line-height:1.7}
 .hero{text-align:center;padding:28px 16px}
 .big{font-size:22px;font-weight:800;margin-bottom:16px}
 .live{border:1px solid var(--accent)}
@@ -71,7 +79,7 @@ nav button.on{color:var(--accent)}
 .day.has{background:var(--accent-soft)}
 .day.sel{outline:2px solid var(--accent)}
 .hl{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);margin-top:8px;font-size:14px}
-.hl .sub{text-align:right}
+.hl .sub{text-align:right;flex:none}
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
 .tiles b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
 .chart{width:100%;display:block;margin-top:8px}
@@ -82,6 +90,26 @@ nav button.on{color:var(--accent)}
 .pbar{display:grid;grid-template-columns:52px 1fr 40px;gap:8px;align-items:center;margin-top:8px;font-size:13px}
 .pbar i{display:block;height:10px;border-radius:5px;background:var(--accent)}
 .pr{color:var(--gold);margin-top:6px;font-size:14px}
+.pf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pf label,.nutin label{display:flex;flex-direction:column;gap:4px;min-width:0}
+.kcal{text-align:center}
+.kcal b{font-size:36px;font-variant-numeric:tabular-nums}
+.nut{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;text-align:center}
+.nut div{display:flex;flex-direction:column;gap:2px}
+.nut .sub{font-size:10px}
+.nut b{font-size:14px;font-variant-numeric:tabular-nums}
+.nutin{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.upl{cursor:pointer;margin-bottom:12px}
+.meal{display:flex;gap:12px;align-items:center}
+.meal img{width:56px;height:56px;border-radius:10px;object-fit:cover;flex:none}
+.mimg{display:block;width:100%;max-width:100%;max-height:240px;object-fit:cover;border-radius:12px;margin-bottom:12px}
+.slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.slot{display:flex;align-items:center;justify-content:center;aspect-ratio:3/4;max-width:100%;border:2px dashed var(--line);border-radius:12px;overflow:hidden;color:var(--sub);text-align:center;font-size:13px;cursor:pointer}
+.slot img{width:100%;height:100%;object-fit:cover}
+.gap{border-top:1px solid var(--line);margin-top:10px;padding-top:10px}
+.pri{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--card2);color:var(--sub)}
+.pri.hi{background:var(--accent);color:var(--white)}
+.note{font-size:13px;color:var(--sub);margin-top:4px;line-height:1.6}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </style>
 <header><h1 id="title">LiftLog</h1></header>
@@ -91,7 +119,7 @@ nav button.on{color:var(--accent)}
 <button data-a="tab" data-tab="workout"><span class="i">🏋️</span>記録</button>
 <button data-a="tab" data-tab="calendar"><span class="i">📅</span>カレンダー</button>
 <button data-a="tab" data-tab="routines"><span class="i">📋</span>ルーティン</button>
-<button data-a="tab" data-tab="stats"><span class="i">📈</span>統計</button>
+<button data-a="tab" data-tab="stats"><span class="i">👤</span>マイ</button>
 </nav>
 <div id="modal" hidden></div>
 <div id="dlg" hidden></div>
@@ -109,23 +137,69 @@ const DEFAULT_EX={
  腹:['クランチ','レッグレイズ','プランク','アブローラー','ケーブルクランチ'],
  有酸素:['ランニング','ウォーキング','バイク','ローイング']
 };
-const TITLES={workout:'ワークアウト',calendar:'カレンダー',routines:'ルーティン',stats:'統計・設定'};
-let S=null,tab='workout',pick=null,redit=null,rest=null,actx,statEx='';
+const TITLES={workout:'ワークアウト',calendar:'カレンダー',food:'食事',ai:'AI診断',routines:'ルーティン',stats:'マイページ'};
+const GOALS={bb:'ボディビル（筋肥大・見た目）',ath:'身体機能向上（筋力・運動能力）',mix:'両方（バランス重視）'};
+const GOAL_SHORT={bb:'ボディビル',ath:'機能向上',mix:'ハイブリッド'};
+const NUT=[['protein','たんぱく質','g'],['fat','脂質','g'],['carbs','炭水化物','g'],['fiber','食物繊維','g'],['salt','塩分','g']];
+const TEMPLATES={
+ '全身A':['ベンチプレス','スクワット','ラットプルダウン','ダンベルショルダープレス','バーベルカール','トライセプスプッシュダウン'],
+ '全身B':['インクラインダンベルプレス','ルーマニアンデッドリフト','ベントオーバーロウ','サイドレイズ','ハンマーカール','レッグレイズ'],
+ 'プッシュ':['ベンチプレス','インクラインダンベルプレス','ダンベルショルダープレス','サイドレイズ','トライセプスプッシュダウン','フレンチプレス'],
+ 'プル':['デッドリフト','懸垂','ラットプルダウン','シーテッドロウ','フェイスプル','バーベルカール'],
+ '脚':['スクワット','レッグプレス','ルーマニアンデッドリフト','レッグカール','レッグエクステンション','カーフレイズ'],
+ '上半身':['ベンチプレス','ベントオーバーロウ','ダンベルショルダープレス','ラットプルダウン','サイドレイズ','バーベルカール','トライセプスプッシュダウン'],
+ '下半身':['スクワット','ルーマニアンデッドリフト','レッグプレス','レッグカール','カーフレイズ','アブローラー'],
+ '胸':['ベンチプレス','インクラインダンベルプレス','ダンベルフライ','ケーブルクロスオーバー','ディップス'],
+ '背中':['デッドリフト','懸垂','ベントオーバーロウ','ラットプルダウン','シーテッドロウ'],
+ '肩':['ショルダープレス','サイドレイズ','リアレイズ','フェイスプル','アップライトロウ'],
+ '腕':['バーベルカール','ナローベンチプレス','ハンマーカール','フレンチプレス','プリーチャーカール','トライセプスプッシュダウン'],
+ '筋力A':['スクワット','ベンチプレス','懸垂','ワンハンドダンベルロウ','プランク'],
+ '筋力B':['デッドリフト','ショルダープレス','ベントオーバーロウ','ブルガリアンスクワット','レッグレイズ'],
+ 'パワー＆体幹':['ランジ','ヒップスラスト','腕立て伏せ','フェイスプル','アブローラー','ローイング'],
+ 'コンディショニング':['バイク','ブルガリアンスクワット','腕立て伏せ','懸垂','プランク','ランニング'],
+ '上半身（筋力＋筋肥大）':['ベンチプレス','懸垂','ダンベルショルダープレス','シーテッドロウ','サイドレイズ','バーベルカール','トライセプスプッシュダウン'],
+ '下半身（筋力＋筋肥大）':['スクワット','ルーマニアンデッドリフト','ブルガリアンスクワット','レッグカール','カーフレイズ','プランク'],
+ 'パワー＆全身':['デッドリフト','ランジ','ヒップスラスト','ワンハンドダンベルロウ','アブローラー','バイク']
+};
+const SPLITS={
+ bb:{2:['全身A','全身B'],3:['プッシュ','プル','脚'],4:['上半身','下半身'],5:['胸','背中','脚','肩','腕'],6:['プッシュ','プル','脚']},
+ ath:{2:['筋力A','筋力B'],3:['筋力A','筋力B','パワー＆体幹'],4:['筋力A','筋力B','パワー＆体幹','コンディショニング'],5:['筋力A','筋力B','パワー＆体幹','コンディショニング'],6:['筋力A','筋力B','パワー＆体幹','コンディショニング']},
+ mix:{2:['上半身（筋力＋筋肥大）','下半身（筋力＋筋肥大）'],3:['上半身（筋力＋筋肥大）','下半身（筋力＋筋肥大）','パワー＆全身'],4:['上半身（筋力＋筋肥大）','下半身（筋力＋筋肥大）'],5:['上半身（筋力＋筋肥大）','下半身（筋力＋筋肥大）','パワー＆全身'],6:['上半身（筋力＋筋肥大）','下半身（筋力＋筋肥大）','パワー＆全身']}
+};
+const MAIN=new Set(['ベンチプレス','スクワット','デッドリフト','懸垂','ショルダープレス','ベントオーバーロウ']);
+const RX={bb:{main:[4,'8〜10回'],acc:[3,'10〜12回']},ath:{main:[5,'3〜5回'],acc:[3,'6〜8回']},mix:{main:[4,'5回'],acc:[3,'8〜12回']}};
+const REST={bb:'セット間の休憩は60〜90秒',ath:'メイン種目の休憩は2〜3分、補助種目は90秒',mix:'メイン種目は2分、補助種目は60〜90秒休憩'};
+const MEAL_PROMPT=`あなたは管理栄養士です。画像の食事を分析してください。
+写っている料理・食品をすべて特定し、見た目から量を推定して、栄養価を見積もってください。
+次の形式のJSONだけを返してください（数値は数値型。単位は kcal と g）:
+{"name":"食事の短い名前","items":[{"name":"料理名","amount":"推定量（例: 茶碗1杯 150g）","kcal":0}],"kcal":0,"protein":0,"fat":0,"carbs":0,"fiber":0,"salt":0,"comment":"栄養面のひとこと（40字以内）"}
+kcal・protein・fat・carbs・fiber・salt は食事全体の合計です。
+食事が写っていない場合は {"error":"食事が写っていないようです"} だけを返してください。`;
+
+let S=null,tab='workout',pick=null,redit=null,rest=null,actx,statEx='',plan=null;
 let uref=null,saveT=null,saving=Promise.resolve();
+let sampleFn,canImg=false,mealDraft=null,mealCtl=null,diagImgs={},diagState=null,diagCtl=null;
+let meals={},mealLoading={};
 const now0=new Date();
-let cal={y:now0.getFullYear(),m:now0.getMonth(),sel:dkey(now0)};
+let cal={y:now0.getFullYear(),m:now0.getMonth(),sel:dkey(now0)},mealDay=dkey(now0);
 
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function pad(n){return String(n).padStart(2,'0')}
 function dkey(t){const d=new Date(t);return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
 function fmtDur(ms){const s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?`${h}:${pad(m)}:${pad(s%60)}`:`${pad(m)}:${pad(s%60)}`}
 function num(n){return Math.round(n).toLocaleString()}
+function r1(n){return Math.round((+n||0)*10)/10}
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function getEx(id){return S.exercises.find(e=>e.id===id)||{name:'(削除済み)',part:'-'}}
+function partOf(name){for(const p of PARTS)if(DEFAULT_EX[p].includes(name))return p;return '腹'}
+function exIdByName(name){let e=S.exercises.find(x=>x.name===name);if(!e){e={id:uid(),name,part:partOf(name)};S.exercises.push(e)}return e.id}
 function sessVol(h){return h.items.reduce((a,it)=>a+it.sets.reduce((b,s)=>b+(s.done===false?0:(+s.w||0)*(+s.r||0)),0),0)}
 function e1rm(s){return +s.r<=1?+s.w:+s.w*(1+ +s.r/30)}
 function weekStart(d){const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-(x.getDay()+6)%7);return x}
+function ageOf(b){if(!b)return null;const [y,m,d]=b.split('-').map(Number),n=new Date();let a=n.getFullYear()-y;if(n.getMonth()+1<m||(n.getMonth()+1===m&&n.getDate()<d))a--;return a}
+function profOk(){const p=S.profile;return !!(p.birth&&p.height&&p.weight)}
+function profText(){const p=S.profile;return `年齢${ageOf(p.birth)||'不明'}歳、${p.sex==='female'?'女性':'男性'}、身長${p.height||'不明'}cm、体重${p.weight||'不明'}kg、体脂肪率${p.bf?p.bf+'%':'不明'}、目的: ${GOALS[p.goal||'mix']}、週${p.days||3}日トレーニング可能`}
 
 function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2400)}
 function ask(msg,o={}){
@@ -140,10 +214,11 @@ function ask(msg,o={}){
  });
 }
 
-function defaults(){const s={exercises:[],routines:[],history:[],current:null,rest:90};for(const p of PARTS)for(const n of DEFAULT_EX[p])s.exercises.push({id:uid(),name:n,part:p});return s}
-function normalize(s){s.routines=s.routines||[];s.history=s.history||[];s.rest=s.rest||90;s.current=s.current||null;s.history.sort((a,b)=>a.start-b.start);return s}
+function defaults(){const s={exercises:[],routines:[],history:[],meals:[],current:null,rest:90,profile:{},diag:null};for(const p of PARTS)for(const n of DEFAULT_EX[p])s.exercises.push({id:uid(),name:n,part:p});return s}
+function normalize(s){s.routines=s.routines||[];s.history=s.history||[];s.meals=s.meals||[];s.rest=s.rest||90;s.current=s.current||null;s.profile=s.profile||{};s.diag=s.diag||null;s.history.sort((a,b)=>a.start-b.start);return s}
 function timeout(p,ms){return Promise.race([p,new Promise((_,j)=>setTimeout(()=>j({code:'timeout'}),ms))])}
 function sessCol(){return uref.collection('sessions')}
+function mealCol(){return uref.collection('meals')}
 
 async function load(){
  const c=window.claude;
@@ -163,7 +238,13 @@ async function load(){
  try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
  S=normalize(S||defaults());
 }
-function stateBody(){return clone({exercises:S.exercises,routines:S.routines,current:S.current,rest:S.rest})}
+async function initAI(){
+ const c=window.claude;
+ sampleFn=null;
+ if(c&&c.use){try{sampleFn=await c.use('sample');if(sampleFn){const l=await sampleFn.limits().catch(()=>null);canImg=!!(l&&l.images)}}catch(e){sampleFn=null}}
+ if(tab==='food'||tab==='ai')render();
+}
+function stateBody(){return clone({exercises:S.exercises,routines:S.routines,current:S.current,rest:S.rest,profile:S.profile,diag:S.diag})}
 function flush(){
  clearTimeout(saveT);saveT=null;
  const body=stateBody();
@@ -184,15 +265,35 @@ function delSess(id){
  if(uref)sessCol().doc(id).delete().catch(()=>toast('削除に失敗しました'));
  save();
 }
+async function loadMeals(day){
+ if(!uref)return S.meals.filter(m=>m.day===day);
+ const q=await mealCol().where('day','==',day).get();
+ return q.docs.map(d=>clone(d.data())).sort((a,b)=>a.at-b.at);
+}
+function ensureMeals(day){
+ if(meals[day]||mealLoading[day])return;
+ mealLoading[day]=1;
+ loadMeals(day).then(l=>{meals[day]=l}).catch(()=>{meals[day]=[];toast('食事記録を読み込めませんでした')}).finally(()=>{delete mealLoading[day];if(tab==='food')render()});
+}
+function putMeal(m){
+ (meals[m.day]=meals[m.day]||[]).push(m);
+ if(uref)mealCol().doc(m.id).set(clone(m)).catch(()=>toast('食事の保存に失敗しました'));
+ else{S.meals.push(m);save()}
+}
+function delMeal(m){
+ meals[m.day]=(meals[m.day]||[]).filter(x=>x.id!==m.id);
+ if(uref)mealCol().doc(m.id).delete().catch(()=>toast('削除に失敗しました'));
+ else{S.meals=S.meals.filter(x=>x.id!==m.id);save()}
+}
 async function replaceAll(next){
  if(uref){
   try{
-   const old=await sessCol().get();
-   for(const d of old.docs)await sessCol().doc(d.id).delete();
+   for(const col of [sessCol(),mealCol()]){const old=await col.get();for(const d of old.docs)await col.doc(d.id).delete()}
    for(const h of next.history)await sessCol().doc(h.id).set(clone(h));
+   for(const m of next.meals)await mealCol().doc(m.id).set(clone(m));
   }catch(e){toast('一部の保存に失敗しました')}
  }
- S=next;rest=null;
+ S=next;rest=null;meals={};
  if(uref)await flush();else save();
  render();
 }
@@ -202,9 +303,11 @@ function makeSets(exId,n){const p=lastSets(exId);n=n||(p?p.length:3);return Arra
 function startWorkout(items,name){S.current={start:Date.now(),name:name||'',items:items||[]};save();tab='workout';render()}
 
 function render(){
- $('#title').textContent=TITLES[tab];
+ const setup=!S.profile.birth;
+ $('nav').hidden=setup;
+ $('#title').textContent=setup?'はじめに':TITLES[tab];
  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
- $('main').innerHTML={workout:vWorkout,calendar:vCalendar,routines:vRoutines,stats:vStats}[tab]();
+ $('main').innerHTML=setup?vSetup():{workout:vWorkout,calendar:vCalendar,food:vFood,ai:vAI,routines:vRoutines,stats:vStats}[tab]();
  tick();
 }
 
@@ -227,6 +330,7 @@ function vWorkout(){
 function exCard(it,i){
  const e=getEx(it.exId),prev=lastSets(it.exId);
  return `<div class="card"><div class="row between"><div class="row grow"><b>${esc(e.name)}</b><span class="tag">${e.part}</span></div><button class="icon" data-a="rmEx" data-i="${i}">✕</button></div>
+ ${it.rep?`<div class="sub mt">目標: ${esc(it.rep)}</div>`:''}
  ${prev?`<div class="sub mt">前回: ${prev.map(s=>`${s.w}kg×${s.r}`).join(', ')}</div>`:''}
  <div class="sh"><span>セット</span><span>kg</span><span>回</span><span>完了</span><span></span></div>
  ${it.sets.map((s,j)=>`<div class="set ${s.done?'done':''}"><span>${j+1}</span><input id="w-${i}-${j}" type="number" inputmode="decimal" step="any" value="${s.w}" data-f="w" data-i="${i}" data-j="${j}"><input id="r-${i}-${j}" type="number" inputmode="numeric" value="${s.r}" data-f="r" data-i="${i}" data-j="${j}"><button class="chk" data-a="done" data-i="${i}" data-j="${j}">✓</button><button class="icon" data-a="rmSet" data-i="${i}" data-j="${j}">−</button></div>`).join('')}
@@ -252,9 +356,116 @@ function vCalendar(){
  <div class="sec">${cal.sel.replace(/-/g,'/')}</div>${(by[cal.sel]||[]).map(h=>sessCard(h,true)).join('')||'<div class="empty">記録なし</div>'}`;
 }
 
+function vFood(){
+ ensureMeals(mealDay);
+ const list=meals[mealDay],t={kcal:0,protein:0,fat:0,carbs:0,fiber:0,salt:0};
+ (list||[]).forEach(m=>{for(const k in t)t[k]+=+m[k]||0});
+ const d=new Date(mealDay.replace(/-/g,'/')),isToday=mealDay===dkey(Date.now());
+ const label=`${d.getMonth()+1}/${d.getDate()}（${'日月火水木金土'[d.getDay()]}）${isToday?' 今日':''}`;
+ const up=sampleFn&&canImg?`<label class="btn p full upl">📷 食事の写真から記録<input type="file" accept="image/*" id="mealFile" hidden></label>`
+  :`<div class="card sub">${sampleFn===undefined?'AIを準備中…':'写真からの記録は、claude.aiでこのページを開いたときに使えます'}</div>`;
+ return `<div class="card"><div class="row between"><button class="icon" data-a="fMove" data-v="-1">‹</button><b>${label}</b><button class="icon" data-a="fMove" data-v="1">›</button></div>
+ <div class="kcal mt"><b>${num(t.kcal)}</b> kcal</div>
+ <div class="nut mt">${NUT.map(([k,l,u])=>`<div><span class="sub">${l}</span><b>${r1(t[k])}${u}</b></div>`).join('')}</div></div>
+ ${up}
+ <div class="sec">記録</div>
+ ${list?list.map(mealCard).join('')||'<div class="empty">まだ記録がありません</div>':'<div class="empty">読み込み中…</div>'}`;
+}
+function mealCard(m){
+ return `<div class="card meal">${m.thumb?`<img src="${esc(m.thumb)}" alt="">`:''}<div class="grow"><div class="row"><span class="tag">${esc(m.type)}</span><b class="grow">${esc(m.name)}</b></div><div class="sub mt">${num(m.kcal)}kcal ・ P ${r1(m.protein)}g ・ F ${r1(m.fat)}g ・ C ${r1(m.carbs)}g</div>${m.comment?`<div class="sub">${esc(m.comment)}</div>`:''}</div><button class="icon" data-a="mDel" data-id="${m.id}">✕</button></div>`;
+}
+function renderMealModal(){
+ const d=mealDraft;if(!d)return;
+ let body;
+ if(d.status==='loading')body='<div class="empty">AIが分析中…（10〜60秒）</div>';
+ else if(d.status==='error')body=`<div class="empty err">${esc(d.err)}</div>`;
+ else{
+  const r=d.r;
+  body=`<input class="inp full" id="mf-name" value="${esc(r.name)}">
+  <select class="inp full mt" id="mf-type">${['朝食','昼食','夕食','間食'].map(t=>`<option ${t===d.type?'selected':''}>${t}</option>`).join('')}</select>
+  ${r.items.map(i=>`<div class="hl"><span>${esc(i.name)} <span class="sub">${esc(i.amount)}</span></span><span class="sub">${num(i.kcal)}kcal</span></div>`).join('')}
+  <div class="nutin mt">${[['kcal','カロリー','kcal'],...NUT].map(([k,l,u])=>`<label><span class="sub">${l}（${u}）</span><input class="inp" type="number" inputmode="decimal" step="any" id="mf-${k}" value="${r1(r[k])}"></label>`).join('')}</div>
+  ${r.comment?`<div class="sub mt">${esc(r.comment)}</div>`:''}
+  <div class="sub mt">数値はAIの推定です。必要なら修正してから記録してください。</div>
+  <button class="btn p full mt" data-a="mSave">記録する</button>`;
+ }
+ modal(`<div class="mh"><b>食事の分析</b><button class="icon" data-a="close">✕</button></div><img class="mimg" src="${esc(d.thumb)}" alt="">${body}`);
+}
+
+function vAI(){
+ if(sampleFn===undefined)return '<div class="empty">AIを準備中…</div>';
+ if(!sampleFn||!canImg)return `<div class="card"><b>AI診断</b><p class="sub mt">AI診断は、claude.aiでこのページを開いたときに使えます。</p></div>`;
+ const slot=(k,l)=>`<label class="slot">${diagImgs[k]?`<img src="${diagImgs[k].thumb}" alt="">`:`<span>＋<br>${l}の写真</span>`}<input type="file" accept="image/*" id="diag-${k}" hidden></label><div class="sub c mt">${l}</div>`;
+ const busy=diagState&&diagState.status==='loading';
+ let h=`<div class="card"><b>理想の体型と今の自分を比べる</b>
+ <div class="sub mt">写真は分析にだけ使い、保存しません。</div>
+ <div class="slots mt"><div>${slot('ideal','理想の体型')}</div><div>${slot('now','今の自分')}</div></div>
+ <div class="sub mt">${profOk()?esc(profText()):'マイページでステータスを入力すると、提案の精度が上がります'}</div>
+ ${busy?`<div class="row mt"><div class="grow sub">AIが分析中…（30秒〜2分）</div><button class="btn sm" data-a="diagStop">中止</button></div>`:`<button class="btn p full mt" data-a="diagRun" ${diagImgs.ideal&&diagImgs.now?'':'disabled'}>AI診断を開始</button>`}
+ ${diagState&&diagState.status==='error'?`<div class="sub err mt">${esc(diagState.err)}</div>`:''}</div>`;
+ if(S.diag)h+=diagHtml(S.diag);
+ return h+'<div class="sub c">※AIによる目安です。持病やけががある場合は専門家に相談してください。</div>';
+}
+function diagHtml(d){
+ const r=d.r,t=r.training||{},f=r.diet||{},dt=new Date(d.at),arr=a=>Array.isArray(a)?a:[];
+ return `<div class="sec">${dt.getMonth()+1}/${dt.getDate()} の診断結果</div>
+ <div class="card"><b>総評</b><p class="mt">${esc(r.summary)}</p></div>
+ <div class="card"><b>理想との差</b>${arr(r.gaps).map(g=>`<div class="gap"><div class="row between"><b>${esc(g.part)}</b><span class="pri ${g.priority==='高'?'hi':''}">優先度 ${esc(g.priority)}</span></div><div class="sub mt">今: ${esc(g.now)}</div><div class="sub">理想: ${esc(g.ideal)}</div></div>`).join('')}</div>
+ <div class="card"><b>トレーニング方針</b><p class="mt">${esc(t.policy)}</p>${t.split?`<div class="sub mt">${esc(t.split)}</div>`:''}
+ ${arr(t.focus).length?`<ul>${arr(t.focus).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+ ${arr(t.menu).map(m=>`<div class="card2"><b>${esc(m.day)}</b>${arr(m.exercises).map(x=>`<div class="note">・${esc(x)}</div>`).join('')}</div>`).join('')}</div>
+ <div class="card"><b>食事方針</b><div class="tiles mt" style="grid-template-columns:repeat(4,1fr)"><div><b>${num(+f.kcal||0)}</b><span class="sub">kcal/日</span></div><div><b>${num(+f.protein||0)}</b><span class="sub">P (g)</span></div><div><b>${num(+f.fat||0)}</b><span class="sub">F (g)</span></div><div><b>${num(+f.carbs||0)}</b><span class="sub">C (g)</span></div></div>
+ ${arr(f.points).length?`<ul>${arr(f.points).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}</div>
+ ${r.period?`<div class="card"><b>目安期間</b><p class="mt">${esc(r.period)}</p></div>`:''}`;
+}
+function diagPrompt(){
+ return `あなたはボディメイクの専門トレーナー兼管理栄養士です。
+1枚目は「理想の体型」、2枚目は「現在の自分」の写真です。人物が誰かは特定せず、体型だけを見てください。
+ユーザー情報: ${profText()}
+2つの体型を比較して差を分析し、その差を埋めるためのトレーニングと食事の方針を提案してください。
+次の形式のJSONだけを返してください:
+{"summary":"総評（120字程度）","gaps":[{"part":"部位や要素（例: 肩幅、体脂肪）","now":"今の状態","ideal":"理想の状態","priority":"高|中|低"}],"training":{"policy":"トレーニング方針（100字程度）","split":"週の分割の提案","focus":["重点ポイント"],"menu":[{"day":"Day1 胸・三頭","exercises":["ベンチプレス 4セット×8〜10回"]}]},"diet":{"kcal":0,"protein":0,"fat":0,"carbs":0,"points":["食事のポイント"]},"period":"理想に近づく目安期間と見込み"}
+gapsは3〜6項目、focusは3〜5項目、menuは週${S.profile.days||3}日分、各exercisesは4〜6種目にしてください。dietの数値は1日あたり（kcal, g）です。すべて日本語で書いてください。`;
+}
+
+function genPlan(goal,days){
+ const p=S.profile,split=SPLITS[goal][days],notes=[REST[goal]];
+ const beginner=S.history.length<8,old=ageOf(p.birth)>=50,fatHi=!!p.bf&&(p.sex==='female'?+p.bf>=32:+p.bf>=25);
+ if(beginner)notes.push('最初の1か月は重量よりフォームを優先し、余力を2〜3回残して終える');
+ if(old)notes.push('ウォームアップを長めにとり、関節に痛みが出る種目は避ける');
+ if(fatHi)notes.push('体脂肪を落とすため、各日の最後に有酸素20分を追加');
+ if(goal==='ath'&&days>=4)notes.push('コンディショニングの日は休憩を短くして続けて回す（サーキット）');
+ const dayList=split.map(name=>{
+  const items=TEMPLATES[name].map((n,idx)=>{
+   const part=partOf(n);
+   if(part==='有酸素')return{name:n,sets:1,rep:'20分'};
+   if(part==='腹')return{name:n,sets:3,rep:n==='プランク'?'30〜60秒':'15回'};
+   let [sets,rep]=RX[goal][MAIN.has(n)||(goal==='mix'&&idx===0)?'main':'acc'];
+   if(beginner)sets=Math.min(sets,3);
+   if(old)sets=Math.max(2,sets-1);
+   return{name:n,sets,rep};
+  });
+  if(fatHi&&!items.some(i=>i.rep==='20分'))items.push({name:goal==='bb'?'ウォーキング':'バイク',sets:1,rep:'20分'});
+  return{name,items};
+ });
+ const sched=Array.from({length:days},(_,i)=>split[i%split.length]).join(' → ');
+ return{days:dayList,schedule:`週${days}日: ${sched}`,notes};
+}
+function openPlan(){const p=S.profile;plan={goal:p.goal||'mix',days:+p.days||3};renderPlan()}
+function renderPlan(){
+ const g=genPlan(plan.goal,plan.days);
+ modal(`<div class="mh"><b>おすすめメニュー</b><button class="icon" data-a="close">✕</button></div>
+ <div class="row"><select class="inp grow" id="pl-goal">${Object.keys(GOALS).map(k=>`<option value="${k}" ${k===plan.goal?'selected':''}>${GOALS[k]}</option>`).join('')}</select><select class="inp" id="pl-days">${[2,3,4,5,6].map(n=>`<option value="${n}" ${n===plan.days?'selected':''}>週${n}日</option>`).join('')}</select></div>
+ ${profOk()?'':'<div class="sub mt">マイページでステータスを入力すると、年齢や体脂肪率に合わせて調整されます</div>'}
+ <div class="sub mt">${esc(g.schedule)}</div>
+ <div class="mt">${g.notes.map(n=>`<div class="note">・${esc(n)}</div>`).join('')}</div>
+ ${g.days.map(d=>`<div class="card2"><b>${esc(d.name)}</b>${d.items.map(i=>`<div class="hl"><span>${esc(i.name)}</span><span class="sub">${i.rep==='20分'?'':i.sets+'セット × '}${esc(i.rep)}</span></div>`).join('')}</div>`).join('')}
+ <button class="btn p full mt" data-a="planSave">${g.days.length}つのルーティンとして保存</button>`);
+}
+
 function vRoutines(){
- return `<button class="btn p full" data-a="rNew">＋ 新しいルーティン</button>`+(S.routines.map(r=>`<div class="card mt"><div class="row between"><b class="grow">${esc(r.name)}</b><div class="row"><button class="btn sm" data-a="rEdit" data-id="${r.id}">編集</button><button class="btn sm d" data-a="rDel" data-id="${r.id}">削除</button></div></div>
- <div class="sub mt">${r.items.map(i=>`${esc(getEx(i.exId).name)} ×${i.sets}`).join(' / ')}</div>
+ return `<button class="btn full" data-a="plan">✨ おすすめメニューを作成</button><button class="btn p full mt" data-a="rNew">＋ 新しいルーティン</button>`+(S.routines.map(r=>`<div class="card mt"><div class="row between"><b class="grow">${esc(r.name)}</b><div class="row"><button class="btn sm" data-a="rEdit" data-id="${r.id}">編集</button><button class="btn sm d" data-a="rDel" data-id="${r.id}">削除</button></div></div>
+ <div class="sub mt">${r.items.map(i=>`${esc(getEx(i.exId).name)} ×${i.sets}${i.rep?`（${esc(i.rep)}）`:''}`).join(' / ')}</div>
  <button class="btn p full mt" data-a="startR" data-id="${r.id}">このルーティンで開始</button></div>`).join('')||'<div class="empty">ルーティンを作るとワンタップで開始できます</div>');
 }
 
@@ -267,6 +478,40 @@ function lineChart(pts){
  const W=320,H=120,P=10,ys=pts.map(p=>p.y),mn=Math.min(...ys),mx=Math.max(...ys),r=mx-mn||1;
  const xy=pts.map((p,i)=>[P+i*(W-2*P)/(pts.length-1),P+(H-2*P)*(1-(p.y-mn)/r)]);
  return `<svg viewBox="0 0 ${W} ${H+16}" class="chart"><polyline points="${xy.map(a=>a.join(',')).join(' ')}" class="ln"/>${xy.map(a=>`<circle cx="${a[0]}" cy="${a[1]}" r="3.5" class="dot"/>`).join('')}<text x="${P}" y="${H+13}">${pts[0].x}</text><text x="${W-P}" y="${H+13}" text-anchor="end">${pts[pts.length-1].x}</text><text x="${P}" y="${P+2}">${mx.toFixed(1)}kg</text><text x="${P}" y="${H-2}">${mn.toFixed(1)}kg</text></svg>`;
+}
+
+function readProfile(){
+ const g=k=>$('#pf-'+k).value,n=k=>+g(k)||null,b=g('birth'),a=ageOf(b);
+ if(!b||!(a>=0&&a<130))return toast('生年月日を正しく入力してください'),null;
+ return{birth:b,sex:g('sex'),height:n('height'),weight:n('weight'),bf:n('bf'),goal:g('goal'),days:+g('days')};
+}
+function ageLabel(b){const a=ageOf(b);return a!=null&&a>=0&&a<130?`（${a}歳）`:''}
+function vSetup(){
+ return `<div class="card"><div class="big">LiftLogへようこそ</div><p class="sub">最初にあなたのステータスを入力してください。年齢は生年月日から自動で計算され、メニュー提案に使われます。生年月日以外は後から入力しても大丈夫です。</p>
+ <div class="mt">${profFields()}</div>
+ <button class="btn p full mt" data-a="setupDone">はじめる</button></div>
+ <div class="sub c">入力した内容は「マイ」タブからいつでも変更できます。</div>`;
+}
+function vProfile(){
+ const p=S.profile,a=ageOf(p.birth);
+ const bmi=p.height&&p.weight?(p.weight/((p.height/100)**2)).toFixed(1):null;
+ const lbm=p.weight&&p.bf?(p.weight*(1-p.bf/100)).toFixed(1):null;
+ const bmr=p.weight&&p.height&&a!=null?Math.round(10*p.weight+6.25*p.height-5*a+(p.sex==='female'?-161:5)):null;
+ return `<div class="card"><b>マイステータス</b><div class="mt">${profFields()}</div>
+ ${bmi?`<div class="tiles mt"><div><b>${bmi}</b><span class="sub">BMI</span></div><div><b>${lbm||'-'}</b><span class="sub">除脂肪体重kg</span></div><div><b>${bmr||'-'}</b><span class="sub">基礎代謝kcal</span></div></div>`:''}
+ <button class="btn p full mt" data-a="pfSave">保存</button></div>`;
+}
+function profFields(){
+ const p=S.profile,v=k=>p[k]==null?'':esc(p[k]);
+ return `<div class="pf">
+ <label style="grid-column:1/-1"><span class="sub">生年月日<span id="pf-agel">${ageLabel(p.birth)}</span></span><input class="inp" id="pf-birth" type="date" min="1900-01-01" max="${dkey(Date.now())}" value="${v('birth')}"></label>
+ <label><span class="sub">性別</span><select class="inp" id="pf-sex"><option value="male" ${p.sex!=='female'?'selected':''}>男性</option><option value="female" ${p.sex==='female'?'selected':''}>女性</option></select></label>
+ <label><span class="sub">身長（cm）</span><input class="inp" id="pf-height" type="number" inputmode="decimal" step="any" value="${v('height')}"></label>
+ <label><span class="sub">体重（kg）</span><input class="inp" id="pf-weight" type="number" inputmode="decimal" step="any" value="${v('weight')}"></label>
+ <label><span class="sub">体脂肪率（%）</span><input class="inp" id="pf-bf" type="number" inputmode="decimal" step="any" value="${v('bf')}"></label>
+ <label><span class="sub">週のトレーニング日数</span><select class="inp" id="pf-days">${[2,3,4,5,6].map(n=>`<option value="${n}" ${n===(+p.days||3)?'selected':''}>週${n}日</option>`).join('')}</select></label>
+ </div>
+ <label class="mt" style="display:flex;flex-direction:column;gap:4px"><span class="sub">目的</span><select class="inp" id="pf-goal">${Object.keys(GOALS).map(k=>`<option value="${k}" ${k===(p.goal||'mix')?'selected':''}>${GOALS[k]}</option>`).join('')}</select></label>`;
 }
 
 function vStats(){
@@ -283,7 +528,8 @@ function vStats(){
   const rows=S.history.filter(h=>h.items.some(i=>i.exId===statEx)).map(h=>{const sets=h.items.find(i=>i.exId===statEx).sets,d=new Date(h.start);return{x:`${d.getMonth()+1}/${d.getDate()}`,y:Math.max(...sets.map(e1rm)),w:Math.max(...sets.map(s=>+s.w))}});
   prog=`<div class="tiles mt"><div><b>${Math.max(...rows.map(r=>r.w))}</b><span class="sub">最大重量kg</span></div><div><b>${Math.max(...rows.map(r=>r.y)).toFixed(1)}</b><span class="sub">推定1RM kg</span></div><div><b>${rows.length}</b><span class="sub">実施回数</span></div></div><div class="sub mt">推定1RMの推移</div>${lineChart(rows.slice(-20))}`;
  }
- return `<div class="card tiles"><div><b>${wk.length}</b><span class="sub">今週の回数</span></div><div><b>${mon.length}</b><span class="sub">今月の回数</span></div><div><b>${S.history.length}</b><span class="sub">累計</span></div></div>
+ return vProfile()+`<div class="sec">トレーニング統計</div>
+ <div class="card tiles"><div><b>${wk.length}</b><span class="sub">今週の回数</span></div><div><b>${mon.length}</b><span class="sub">今月の回数</span></div><div><b>${S.history.length}</b><span class="sub">累計</span></div></div>
  <div class="card"><b>週間ボリューム</b><div class="sub">今週 ${num(vals[7])}kg</div>${barChart(vals,labels)}</div>
  <div class="card"><b>部位別セット数</b><span class="sub">（直近30日）</span>${PARTS.map(p=>`<div class="pbar"><span>${p}</span><div><i style="width:${(pc[p]||0)/pmax*100}%"></i></div><span class="sub">${pc[p]||0}</span></div>`).join('')}</div>
  <div class="card"><b>種目別の成長</b>${done.length?`<select class="inp full mt" id="statEx">${done.map(id=>`<option value="${id}" ${id===statEx?'selected':''}>${esc(getEx(id).name)}</option>`).join('')}</select>`:''}${prog}</div>
@@ -293,7 +539,7 @@ function vStats(){
 }
 
 function modal(html){$('#modal').innerHTML=`<div class="sheet">${html}</div>`;$('#modal').hidden=false;document.body.style.overflow='hidden'}
-function closeModal(){$('#modal').hidden=true;document.body.style.overflow='';pick=null}
+function closeModal(){$('#modal').hidden=true;document.body.style.overflow='';pick=null;plan=null;if(mealCtl)mealCtl.abort();mealCtl=null;mealDraft=null}
 
 function openPicker(cb,back){
  pick={part:'すべて',q:'',sel:[],cb,back};
@@ -331,8 +577,58 @@ async function finish(){
  modal(`<div class="hero"><div class="big">🔥 お疲れさま！</div><div class="tiles"><div><b>${fmtDur(h.end-h.start)}</b><span class="sub">時間</span></div><div><b>${num(sessVol(h))}</b><span class="sub">kg</span></div><div><b>${items.reduce((a,i)=>a+i.sets.length,0)}</b><span class="sub">セット</span></div></div>${prs}<button class="btn p full mt" data-a="close">閉じる</button></div>`);
 }
 
+function toJpeg(file,max,q,asUrl){
+ return new Promise((res,rej)=>{
+  const u=URL.createObjectURL(file),img=new Image();
+  img.onload=()=>{
+   URL.revokeObjectURL(u);
+   const s=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight)),c=document.createElement('canvas');
+   c.width=Math.max(1,Math.round(img.naturalWidth*s));c.height=Math.max(1,Math.round(img.naturalHeight*s));
+   c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+   if(asUrl)res(c.toDataURL('image/jpeg',q));else c.toBlob(b=>b?res(b):rej(),'image/jpeg',q);
+  };
+  img.onerror=()=>{URL.revokeObjectURL(u);rej()};
+  img.src=u;
+ });
+}
+function aiErr(e){
+ return {not_granted:'Claudeの利用が許可されていません',sampling_disabled:'このアカウントではAIを使えません',rate_limited:'利用が混み合っています。少し待ってから試してください',image_rejected:'この画像は読み込めません。別の写真を選んでください',refused:'この画像は分析できませんでした。別の写真で試してください',invalid_json:'うまく分析できませんでした。もう一度試してください',session_expired:'claude.aiに再ログインしてください',images_unavailable:'この画面では画像を送れません'}[e&&e.code]||'エラーが発生しました。もう一度試してください';
+}
+async function startMeal(f){
+ let big,thumb;
+ try{big=await toJpeg(f,1280,.85);thumb=await toJpeg(f,240,.6,true)}catch(_){return toast('画像を読み込めませんでした')}
+ const h=new Date().getHours();
+ const d={thumb,status:'loading',type:h<10?'朝食':h<15?'昼食':h<18?'間食':'夕食'};
+ mealDraft=d;mealCtl=new AbortController();
+ renderMealModal();
+ try{
+  const r=await sampleFn.json(MEAL_PROMPT,{images:[big],signal:mealCtl.signal});
+  if(mealDraft!==d)return;
+  if(!r||typeof r!=='object'||r.error){d.status='error';d.err=(r&&r.error)||'食事が写っていないようです'}
+  else{
+   d.status='done';
+   d.r={name:String(r.name||'食事'),items:(Array.isArray(r.items)?r.items:[]).slice(0,20).map(i=>({name:String(i&&i.name||''),amount:String(i&&i.amount||''),kcal:+(i&&i.kcal)||0})),comment:String(r.comment||'')};
+   for(const k of ['kcal','protein','fat','carbs','fiber','salt'])d.r[k]=Math.max(0,+r[k]||0);
+  }
+ }catch(e){if(mealDraft!==d||e.code==='cancelled')return;d.status='error';d.err=aiErr(e)}
+ renderMealModal();
+}
+async function runDiag(){
+ if(!diagImgs.ideal||!diagImgs.now)return toast('2枚の写真を選んでください');
+ diagState={status:'loading'};diagCtl=new AbortController();render();
+ try{
+  const r=await sampleFn.json(diagPrompt(),{images:[diagImgs.ideal.blob,diagImgs.now.blob],signal:diagCtl.signal});
+  if(!r||typeof r!=='object'||!r.summary)throw{code:'invalid_json'};
+  S.diag={at:Date.now(),r};save();diagState=null;
+ }catch(e){diagState=e.code==='cancelled'?null:{status:'error',err:aiErr(e)}}
+ diagCtl=null;
+ if(tab==='ai')render();
+}
+
 async function exportData(){
- const data=JSON.stringify(S),filename=`liftlog-${dkey(Date.now())}.json`;
+ const all={...S};
+ if(uref){try{all.meals=(await mealCol().get()).docs.map(d=>clone(d.data()))}catch(e){return toast('食事記録を読み込めませんでした')}}
+ const data=JSON.stringify(all),filename=`liftlog-${dkey(Date.now())}.json`;
  const dl=window.claude&&window.claude.use?await window.claude.use('downloads'):undefined;
  if(dl){try{await dl.save({filename,data});toast('書き出しました')}catch(e){if(e&&e.code!=='declined')toast('書き出せませんでした')}return}
  if(dl===null)return toast('この画面では書き出せません');
@@ -363,7 +659,7 @@ const ACT={
  startR:d=>{
   if(S.current){toast('進行中のワークアウトがあります');tab='workout';render();return}
   const r=S.routines.find(x=>x.id===d.id);
-  startWorkout(r.items.filter(i=>S.exercises.some(e=>e.id===i.exId)).map(i=>({exId:i.exId,sets:makeSets(i.exId,i.sets)})),r.name);
+  startWorkout(r.items.filter(i=>S.exercises.some(e=>e.id===i.exId)).map(i=>({exId:i.exId,rep:i.rep||'',sets:makeSets(i.exId,i.sets)})),r.name);
  },
  addEx:()=>openPicker(ids=>{ids.forEach(id=>S.current.items.push({exId:id,sets:makeSets(id)}));save();closeModal();render()}),
  rmEx:async d=>{if(await ask('この種目を削除しますか？',{ok:'削除',danger:true})){S.current.items.splice(+d.i,1);save();render()}},
@@ -375,7 +671,7 @@ const ACT={
  saveR:async()=>{
   const c=S.current;if(!c.items.length)return toast('種目がありません');
   const n=await ask('ルーティン名',{input:c.name||'',ph:'例: 胸の日',ok:'保存'});if(!n)return;
-  S.routines.push({id:uid(),name:n,items:c.items.map(it=>({exId:it.exId,sets:Math.max(1,it.sets.length)}))});save();toast('ルーティンを保存しました');
+  S.routines.push({id:uid(),name:n,items:c.items.map(it=>({exId:it.exId,sets:Math.max(1,it.sets.length),rep:it.rep||''}))});save();toast('ルーティンを保存しました');
  },
  restAdd:d=>{if(rest){rest.end+=+d.s*1000;rest.total=Math.max(1,rest.total+ +d.s);tick()}},
  restSkip:()=>{rest=null;tick()},
@@ -392,6 +688,25 @@ const ACT={
  cSel:d=>{cal.sel=d.k;render()},
  cMove:d=>{const x=new Date(cal.y,cal.m+ +d.v,1);cal.y=x.getFullYear();cal.m=x.getMonth();render()},
  delS:async d=>{if(await ask('この記録を削除しますか？',{ok:'削除',danger:true})){delSess(d.id);render()}},
+ fMove:d=>{const x=new Date(mealDay.replace(/-/g,'/'));x.setDate(x.getDate()+ +d.v);mealDay=dkey(x);render()},
+ mSave:()=>{
+  const d=mealDraft;if(!d||!d.r)return;
+  const v=k=>Math.max(0,+$('#mf-'+k).value||0);
+  const m={id:uid(),day:mealDay,at:Date.now(),type:$('#mf-type').value,name:$('#mf-name').value.trim()||'食事',items:d.r.items,comment:d.r.comment,thumb:d.thumb};
+  for(const k of ['kcal','protein','fat','carbs','fiber','salt'])m[k]=v(k);
+  putMeal(m);closeModal();render();toast('記録しました');
+ },
+ mDel:async d=>{const m=(meals[mealDay]||[]).find(x=>x.id===d.id);if(m&&await ask('この食事の記録を削除しますか？',{ok:'削除',danger:true})){delMeal(m);render()}},
+ diagRun:()=>runDiag(),
+ diagStop:()=>{if(diagCtl)diagCtl.abort()},
+ plan:()=>openPlan(),
+ planSave:()=>{
+  const g=genPlan(plan.goal,plan.days),label=GOAL_SHORT[plan.goal];
+  g.days.forEach(d=>S.routines.push({id:uid(),name:`${label}｜${d.name}`,items:d.items.map(i=>({exId:exIdByName(i.name),sets:i.sets,rep:i.rep}))}));
+  save();closeModal();render();toast(`${g.days.length}つのルーティンを保存しました`);
+ },
+ pfSave:()=>{const p=readProfile();if(!p)return;S.profile=p;save();render();toast('ステータスを保存しました')},
+ setupDone:()=>{const p=readProfile();if(!p)return;S.profile=p;save();render();scrollTo(0,0);toast('セットアップが完了しました')},
  rNew:()=>openRedit(),
  rEdit:d=>openRedit(S.routines.find(r=>r.id===d.id)),
  rDel:async d=>{if(await ask('このルーティンを削除しますか？',{ok:'削除',danger:true})){S.routines=S.routines.filter(r=>r.id!==d.id);save();render()}},
@@ -421,11 +736,20 @@ document.addEventListener('input',e=>{
  if(d.f&&S.current){S.current.items[+d.i].sets[+d.j][d.f]=t.value===''?'':+t.value;save();const v=$('#tvol');if(v)v.textContent=num(sessVol(S.current))}
  else if(t.id==='pq'){pick.q=t.value;renderPick()}
  else if(t.id==='rname')redit.name=t.value;
+ else if(t.id==='pf-birth')$('#pf-agel').textContent=ageLabel(t.value);
 });
 document.addEventListener('change',async e=>{
  const t=e.target;
  if(t.id==='restSel'){S.rest=+t.value;save()}
  else if(t.id==='statEx'){statEx=t.value;render()}
+ else if(t.id==='pl-goal'){plan.goal=t.value;renderPlan()}
+ else if(t.id==='pl-days'){plan.days=+t.value;renderPlan()}
+ else if(t.id==='mealFile'&&t.files[0]){const f=t.files[0];t.value='';startMeal(f)}
+ else if((t.id==='diag-ideal'||t.id==='diag-now')&&t.files[0]){
+  const f=t.files[0],k=t.id.slice(5);t.value='';
+  try{diagImgs[k]={blob:await toJpeg(f,1280,.85),thumb:await toJpeg(f,400,.7,true)}}catch(_){return toast('画像を読み込めませんでした')}
+  render();
+ }
  else if(t.id==='imp'&&t.files[0]){
   const f=t.files[0];t.value='';
   let d;
@@ -435,7 +759,7 @@ document.addEventListener('change',async e=>{
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&uref&&saveT)flush()});
 
-load().then(()=>{render();setInterval(tick,500)});
+load().then(()=>{render();setInterval(tick,500);initAI()});
 </script>
 
 </body></html>
