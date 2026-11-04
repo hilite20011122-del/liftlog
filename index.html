@@ -52,6 +52,7 @@ ul{padding-left:18px;margin-top:6px;font-size:14px;line-height:1.7}
 .set{border-radius:10px;padding:2px 0}
 .set input{background:var(--card2);border:0;border-radius:8px;color:var(--text);text-align:center;padding:9px 4px;font-size:16px;width:100%;min-width:0}
 .set.done{background:var(--ok-soft)}
+.bsel{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr);gap:8px}
 .rgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .pfoot{position:sticky;bottom:0;display:flex;justify-content:flex-end;gap:8px;margin-top:10px;padding-top:12px;background:var(--card)}
 .chk{background:var(--card2);border:0;border-radius:8px;height:38px;color:var(--sub);font-size:18px}
@@ -500,7 +501,8 @@ function lineChart(pts){
 
 function readProfile(){
  const g=k=>$('#pf-'+k).value,n=k=>+g(k)||null,b=g('birth'),a=ageOf(b);
- if(!b||!(a>=0&&a<130))return toast('生年月日を正しく入力してください'),null;
+ const [y,m,d]=b.split('-').map(Number),dt=new Date(y,m-1,d);
+ if(!b||dt.getFullYear()!==y||dt.getMonth()!==m-1||dt.getDate()!==d||dt>new Date()||!(a>=0&&a<130))return toast('生年月日を正しく入力してください'),null;
  return{birth:b,sex:g('sex'),height:n('height'),weight:n('weight'),bf:n('bf'),goal:g('goal'),days:+g('days')};
 }
 function ageLabel(b){const a=ageOf(b);return a!=null&&a>=0&&a<130?`（${a}歳）`:''}
@@ -519,10 +521,21 @@ function vProfile(){
  ${bmi?`<div class="tiles mt"><div><b>${bmi}</b><span class="sub">BMI</span></div><div><b>${lbm||'-'}</b><span class="sub">除脂肪体重kg</span></div><div><b>${bmr||'-'}</b><span class="sub">基礎代謝kcal</span></div></div>`:''}
  <button class="btn p full mt" data-a="pfSave">保存</button></div>`;
 }
+function bSel(id,unit,list,cur){return `<select class="inp" id="pf-${id}"><option value="">${unit}</option>${list.map(n=>`<option value="${n}" ${n===cur?'selected':''}>${n}${unit}</option>`).join('')}</select>`}
+function setBirth(b,fromText){
+ $('#pf-birth').value=b;$('#pf-agel').textContent=ageLabel(b);
+ if(!b)return;
+ const [y,m,d]=b.split('-').map(Number);
+ if(fromText){$('#pf-by').value=y;$('#pf-bm').value=m;$('#pf-bd').value=d}
+ else $('#pf-btext').value=b.replace(/-/g,'/');
+}
 function profFields(){
- const p=S.profile,v=k=>p[k]==null?'':esc(p[k]);
+ const p=S.profile,v=k=>p[k]==null?'':esc(p[k]),Y=new Date().getFullYear(),[by,bm,bd]=(p.birth||'').split('-').map(Number);
  return `<div class="pf">
- <label style="grid-column:1/-1"><span class="sub">生年月日<span id="pf-agel">${ageLabel(p.birth)}</span></span><input class="inp" id="pf-birth" type="date" min="1900-01-01" max="${dkey(Date.now())}" value="${v('birth')}"></label>
+ <div style="grid-column:1/-1;display:flex;flex-direction:column;gap:4px"><span class="sub">生年月日<span id="pf-agel">${ageLabel(p.birth)}</span></span>
+ <input class="inp" id="pf-btext" inputmode="numeric" maxlength="10" placeholder="yyyy/mm/dd（数字8桁で入力）" value="${p.birth?esc(p.birth.replace(/-/g,'/')):''}">
+ <div class="bsel">${bSel('by','年',Array.from({length:Y-1919},(_,i)=>Y-i),by)}${bSel('bm','月',Array.from({length:12},(_,i)=>i+1),bm)}${bSel('bd','日',Array.from({length:31},(_,i)=>i+1),bd)}</div>
+ <input type="hidden" id="pf-birth" value="${v('birth')}"></div>
  <label><span class="sub">性別</span><select class="inp" id="pf-sex"><option value="male" ${p.sex!=='female'?'selected':''}>男性</option><option value="female" ${p.sex==='female'?'selected':''}>女性</option></select></label>
  <label><span class="sub">身長（cm）</span><input class="inp" id="pf-height" type="number" inputmode="decimal" step="any" value="${v('height')}"></label>
  <label><span class="sub">体重（kg）</span><input class="inp" id="pf-weight" type="number" inputmode="decimal" step="any" value="${v('weight')}"></label>
@@ -774,7 +787,8 @@ document.addEventListener('input',e=>{
  if(d.f&&S.current){S.current.items[+d.i].sets[+d.j][d.f]=t.value===''?'':+t.value;save();const v=$('#tvol');if(v)v.textContent=num(sessVol(S.current))}
  else if(t.id==='pq'){pick.q=t.value;renderPick()}
  else if(t.id==='rname')redit.name=t.value;
- else if(t.id==='pf-birth')$('#pf-agel').textContent=ageLabel(t.value);
+ else if(t.id==='pf-btext'){const v=t.value.replace(/\D/g,'').slice(0,8);t.value=v.slice(0,4)+(v.length>4?'/'+v.slice(4,6):'')+(v.length>6?'/'+v.slice(6):'');setBirth(v.length===8?`${v.slice(0,4)}-${v.slice(4,6)}-${v.slice(6)}`:'',true)}
+ else if(['pf-by','pf-bm','pf-bd'].includes(t.id)){const [y,m,d]=['by','bm','bd'].map(k=>$('#pf-'+k).value);setBirth(y&&m&&d?`${y}-${pad(m)}-${pad(d)}`:'',false)}
 });
 document.addEventListener('change',async e=>{
  const t=e.target;
