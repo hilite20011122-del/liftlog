@@ -1,0 +1,441 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="LiftLog"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"></head><body>
+<title>LiftLog</title>
+<meta name="theme-color" content="#0f0f12">
+<style>
+:root{--bg:#0f0f12;--card:#1a1a20;--card2:#26262f;--line:#2e2e38;--text:#f2f2f5;--sub:#9a9aa8;--accent:#ff5a1f;--accent-soft:rgba(255,90,31,.25);--ok:#22c55e;--ok-soft:rgba(34,197,94,.12);--danger:#ff4d5e;--gold:#facc15;--shade:rgba(0,0,0,.6);--white:#fff;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;font-size:15px;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button{font-family:inherit;cursor:pointer}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:14px 16px;border-bottom:1px solid var(--line);z-index:5}
+header h1{font-size:18px;max-width:640px;margin:0 auto}
+main{padding:16px;padding-bottom:170px;max-width:640px;margin:0 auto}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
+nav button{flex:1;background:none;border:0;color:var(--sub);padding:9px 0 7px;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button .i{font-size:20px}
+nav button.on{color:var(--accent)}
+.card{background:var(--card);border-radius:14px;padding:14px;margin-bottom:12px}
+.btn{background:var(--card2);color:var(--text);border:0;border-radius:10px;padding:11px 14px;font-size:14px;font-weight:600}
+.btn.p{background:var(--accent);color:var(--white)}
+.btn.ok{background:var(--ok);color:var(--white)}
+.btn.d{color:var(--danger)}
+.btn.dz{background:var(--danger);color:var(--white)}
+.btn.sm{padding:6px 10px;font-size:13px}
+.full{width:100%}
+.btn.full{padding:14px}
+.row{display:flex;gap:8px;align-items:center}
+.between{justify-content:space-between}
+.grow{flex:1;min-width:0}
+.mt{margin-top:10px}
+.sub{color:var(--sub);font-size:12px}
+.sec{color:var(--sub);font-size:13px;font-weight:700;margin:18px 2px 8px}
+.empty{color:var(--sub);text-align:center;padding:28px 0}
+.tag{background:var(--card2);color:var(--sub);font-size:11px;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.icon{background:none;border:0;color:var(--sub);font-size:18px;width:32px;height:32px;border-radius:8px;flex:none}
+.inp{background:var(--card2);border:0;border-radius:10px;color:var(--text);padding:11px 12px;font-size:16px;min-width:0}
+.hero{text-align:center;padding:28px 16px}
+.big{font-size:22px;font-weight:800;margin-bottom:16px}
+.live{border:1px solid var(--accent)}
+.timer{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.vol{font-size:20px;font-weight:700;text-align:right}
+.set,.sh{display:grid;grid-template-columns:34px 1fr 1fr 46px 30px;gap:6px;align-items:center;text-align:center;margin-top:6px}
+.sh{color:var(--sub);font-size:12px;margin-top:12px}
+.set{border-radius:10px;padding:2px 0}
+.set input{background:var(--card2);border:0;border-radius:8px;color:var(--text);text-align:center;padding:9px 4px;font-size:16px;width:100%;min-width:0}
+.set.done{background:var(--ok-soft)}
+.chk{background:var(--card2);border:0;border-radius:8px;height:38px;color:var(--sub);font-size:18px}
+.set.done .chk{background:var(--ok);color:var(--white)}
+#rest{position:fixed;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom,0px));background:var(--card2);z-index:9;overflow:hidden;border-top:1px solid var(--line)}
+#rest .fill{position:absolute;left:0;top:0;bottom:0;background:var(--accent-soft);transition:width .5s linear}
+#rest .rin{position:relative;display:flex;align-items:center;gap:8px;padding:10px 16px;max-width:640px;margin:0 auto}
+#rest .t{font-size:22px;flex:1;font-variant-numeric:tabular-nums}
+#modal{position:fixed;inset:0;background:var(--shade);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--card);width:100%;max-width:640px;max-height:88vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:17px}
+#dlg{position:fixed;inset:0;background:var(--shade);z-index:30;display:flex;align-items:center;justify-content:center;padding:16px}
+.dbox{background:var(--card);border-radius:16px;padding:18px;width:100%;max-width:340px;line-height:1.6}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(130px + env(safe-area-inset-bottom,0px));background:var(--text);color:var(--bg);padding:10px 16px;border-radius:99px;font-size:14px;font-weight:600;z-index:40;max-width:calc(100% - 32px)}
+.chips{display:flex;gap:6px;overflow-x:auto;margin:10px 0;padding-bottom:4px}
+.chip{background:var(--card2);color:var(--sub);border:0;border-radius:99px;padding:7px 14px;font-size:13px;white-space:nowrap}
+.chip.on{background:var(--accent);color:var(--white)}
+.li{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:0;border-bottom:1px solid var(--line);color:var(--text);padding:13px 4px;font-size:15px;text-align:left}
+.li.on{color:var(--accent)}
+.li.on .tag{background:var(--accent);color:var(--white)}
+.ritem{display:flex;align-items:center;gap:4px;padding:8px 0;border-bottom:1px solid var(--line)}
+.ritem .n{min-width:52px;text-align:center;font-size:13px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.wd{color:var(--sub);font-size:12px;padding:4px 0}
+.day{background:none;border:0;color:var(--text);aspect-ratio:1;max-width:100%;border-radius:50%;font-size:14px}
+.day.today{color:var(--accent);font-weight:800}
+.day.has{background:var(--accent-soft)}
+.day.sel{outline:2px solid var(--accent)}
+.hl{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);margin-top:8px;font-size:14px}
+.hl .sub{text-align:right}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.tiles b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+.chart{width:100%;display:block;margin-top:8px}
+.chart text{fill:var(--sub);font-size:10px}
+.chart .bar{fill:var(--accent)}
+.chart .ln{fill:none;stroke:var(--accent);stroke-width:2.5}
+.chart .dot{fill:var(--accent)}
+.pbar{display:grid;grid-template-columns:52px 1fr 40px;gap:8px;align-items:center;margin-top:8px;font-size:13px}
+.pbar i{display:block;height:10px;border-radius:5px;background:var(--accent)}
+.pr{color:var(--gold);margin-top:6px;font-size:14px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<header><h1 id="title">LiftLog</h1></header>
+<main><div class="empty">読み込み中…</div></main>
+<div id="rest" hidden><div class="fill"></div><div class="rin"><span class="sub">休憩</span><b class="t"></b><button class="btn sm" data-a="restAdd" data-s="-15">-15</button><button class="btn sm" data-a="restAdd" data-s="15">+15</button><button class="btn sm p" data-a="restSkip">スキップ</button></div></div>
+<nav>
+<button data-a="tab" data-tab="workout"><span class="i">🏋️</span>記録</button>
+<button data-a="tab" data-tab="calendar"><span class="i">📅</span>カレンダー</button>
+<button data-a="tab" data-tab="routines"><span class="i">📋</span>ルーティン</button>
+<button data-a="tab" data-tab="stats"><span class="i">📈</span>統計</button>
+</nav>
+<div id="modal" hidden></div>
+<div id="dlg" hidden></div>
+<div id="toast" hidden></div>
+<script>
+const $=s=>document.querySelector(s);
+const KEY='liftlog-v1';
+const PARTS=['胸','背中','脚','肩','腕','腹','有酸素'];
+const DEFAULT_EX={
+ 胸:['ベンチプレス','インクラインベンチプレス','ダンベルプレス','インクラインダンベルプレス','ダンベルフライ','チェストプレス','ケーブルクロスオーバー','ディップス','腕立て伏せ'],
+ 背中:['デッドリフト','懸垂','ラットプルダウン','ベントオーバーロウ','シーテッドロウ','ワンハンドダンベルロウ','Tバーロウ','バックエクステンション'],
+ 脚:['スクワット','レッグプレス','ブルガリアンスクワット','ルーマニアンデッドリフト','ランジ','レッグエクステンション','レッグカール','カーフレイズ','ヒップスラスト'],
+ 肩:['ショルダープレス','ダンベルショルダープレス','サイドレイズ','フロントレイズ','リアレイズ','フェイスプル','アップライトロウ'],
+ 腕:['バーベルカール','ダンベルカール','ハンマーカール','プリーチャーカール','トライセプスプッシュダウン','フレンチプレス','ナローベンチプレス'],
+ 腹:['クランチ','レッグレイズ','プランク','アブローラー','ケーブルクランチ'],
+ 有酸素:['ランニング','ウォーキング','バイク','ローイング']
+};
+const TITLES={workout:'ワークアウト',calendar:'カレンダー',routines:'ルーティン',stats:'統計・設定'};
+let S=null,tab='workout',pick=null,redit=null,rest=null,actx,statEx='';
+let uref=null,saveT=null,saving=Promise.resolve();
+const now0=new Date();
+let cal={y:now0.getFullYear(),m:now0.getMonth(),sel:dkey(now0)};
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function pad(n){return String(n).padStart(2,'0')}
+function dkey(t){const d=new Date(t);return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
+function fmtDur(ms){const s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?`${h}:${pad(m)}:${pad(s%60)}`:`${pad(m)}:${pad(s%60)}`}
+function num(n){return Math.round(n).toLocaleString()}
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function getEx(id){return S.exercises.find(e=>e.id===id)||{name:'(削除済み)',part:'-'}}
+function sessVol(h){return h.items.reduce((a,it)=>a+it.sets.reduce((b,s)=>b+(s.done===false?0:(+s.w||0)*(+s.r||0)),0),0)}
+function e1rm(s){return +s.r<=1?+s.w:+s.w*(1+ +s.r/30)}
+function weekStart(d){const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-(x.getDay()+6)%7);return x}
+
+function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2400)}
+function ask(msg,o={}){
+ return new Promise(res=>{
+  const d=$('#dlg'),inp=o.input!==undefined;
+  d.innerHTML=`<div class="dbox"><div>${esc(msg)}</div>${inp?`<input class="inp full mt" id="dlgIn" value="${esc(o.input)}" placeholder="${esc(o.ph||'')}">`:''}<div class="row mt"><button class="btn grow" id="dlgNo">キャンセル</button><button class="btn grow ${o.danger?'dz':'p'}" id="dlgYes">${esc(o.ok||'OK')}</button></div></div>`;
+  d.hidden=false;
+  const done=v=>{d.hidden=true;d.innerHTML='';res(v)};
+  $('#dlgNo').onclick=()=>done(inp?null:false);
+  $('#dlgYes').onclick=()=>done(inp?$('#dlgIn').value.trim():true);
+  if(inp)$('#dlgIn').focus();
+ });
+}
+
+function defaults(){const s={exercises:[],routines:[],history:[],current:null,rest:90};for(const p of PARTS)for(const n of DEFAULT_EX[p])s.exercises.push({id:uid(),name:n,part:p});return s}
+function normalize(s){s.routines=s.routines||[];s.history=s.history||[];s.rest=s.rest||90;s.current=s.current||null;s.history.sort((a,b)=>a.start-b.start);return s}
+function timeout(p,ms){return Promise.race([p,new Promise((_,j)=>setTimeout(()=>j({code:'timeout'}),ms))])}
+function sessCol(){return uref.collection('sessions')}
+
+async function load(){
+ const c=window.claude;
+ if(c&&c.use){
+  try{
+   const [db,user]=await Promise.all([c.use('db'),c.use('user')]);
+   const id=db&&user&&await user.id();
+   if(id){
+    const ref=db.doc('data/users/'+id+'/state');
+    const [st,hs]=await timeout(Promise.all([ref.get(),ref.collection('sessions').get()]),12000);
+    S=normalize(st.exists?{...clone(st.data()),history:hs.docs.map(x=>clone(x.data()))}:{...defaults(),history:hs.docs.map(x=>clone(x.data()))});
+    uref=ref;
+    return;
+   }
+  }catch(e){toast('クラウドに接続できないため、この端末内に保存します')}
+ }
+ try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
+ S=normalize(S||defaults());
+}
+function stateBody(){return clone({exercises:S.exercises,routines:S.routines,current:S.current,rest:S.rest})}
+function flush(){
+ clearTimeout(saveT);saveT=null;
+ const body=stateBody();
+ saving=saving.then(()=>uref.set(body)).catch(()=>toast('保存に失敗しました'));
+ return saving;
+}
+function save(){
+ if(!uref){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}return}
+ clearTimeout(saveT);saveT=setTimeout(flush,600);
+}
+function putSess(h){
+ S.history.push(h);
+ if(uref)sessCol().doc(h.id).set(clone(h)).catch(()=>toast('記録の保存に失敗しました'));
+ save();
+}
+function delSess(id){
+ S.history=S.history.filter(h=>h.id!==id);
+ if(uref)sessCol().doc(id).delete().catch(()=>toast('削除に失敗しました'));
+ save();
+}
+async function replaceAll(next){
+ if(uref){
+  try{
+   const old=await sessCol().get();
+   for(const d of old.docs)await sessCol().doc(d.id).delete();
+   for(const h of next.history)await sessCol().doc(h.id).set(clone(h));
+  }catch(e){toast('一部の保存に失敗しました')}
+ }
+ S=next;rest=null;
+ if(uref)await flush();else save();
+ render();
+}
+
+function lastSets(exId){for(let i=S.history.length-1;i>=0;i--){const it=S.history[i].items.find(x=>x.exId===exId);if(it)return it.sets}return null}
+function makeSets(exId,n){const p=lastSets(exId);n=n||(p?p.length:3);return Array.from({length:n},(_,k)=>{const q=p&&p[Math.min(k,p.length-1)];return{w:q?q.w:'',r:q?q.r:'',done:false}})}
+function startWorkout(items,name){S.current={start:Date.now(),name:name||'',items:items||[]};save();tab='workout';render()}
+
+function render(){
+ $('#title').textContent=TITLES[tab];
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+ $('main').innerHTML={workout:vWorkout,calendar:vCalendar,routines:vRoutines,stats:vStats}[tab]();
+ tick();
+}
+
+function vWorkout(){
+ const c=S.current;
+ if(!c){
+  const today=S.history.filter(h=>dkey(h.start)===dkey(Date.now()));
+  let h=`<div class="card hero"><div class="big">今日も追い込もう 🔥</div><button class="btn p full" data-a="start">空のワークアウトを開始</button></div>`;
+  if(S.routines.length)h+=`<div class="sec">ルーティンから開始</div>`+S.routines.map(r=>`<div class="card row between"><div class="grow"><b>${esc(r.name)}</b><div class="sub">${r.items.map(i=>esc(getEx(i.exId).name)).join('・')}</div></div><button class="btn p sm" data-a="startR" data-id="${r.id}">開始</button></div>`).join('');
+  if(today.length)h+=`<div class="sec">今日の記録</div>`+today.map(x=>sessCard(x)).join('');
+  return h;
+ }
+ return `<div class="card live"><div class="row between"><div><div class="sub">${esc(c.name||'ワークアウト')}</div><div class="timer" id="elapsed">${fmtDur(Date.now()-c.start)}</div></div><div><div class="sub" style="text-align:right">ボリューム</div><div class="vol"><span id="tvol">${num(sessVol(c))}</span> kg</div></div></div></div>
+ ${c.items.map(exCard).join('')||'<div class="empty">「種目を追加」から始めよう</div>'}
+ <button class="btn p full" data-a="addEx">＋ 種目を追加</button>
+ <div class="row mt"><button class="btn grow" data-a="saveR">ルーティンとして保存</button><button class="btn d grow" data-a="discard">破棄</button></div>
+ <button class="btn ok full mt" data-a="finish">ワークアウト完了</button>`;
+}
+
+function exCard(it,i){
+ const e=getEx(it.exId),prev=lastSets(it.exId);
+ return `<div class="card"><div class="row between"><div class="row grow"><b>${esc(e.name)}</b><span class="tag">${e.part}</span></div><button class="icon" data-a="rmEx" data-i="${i}">✕</button></div>
+ ${prev?`<div class="sub mt">前回: ${prev.map(s=>`${s.w}kg×${s.r}`).join(', ')}</div>`:''}
+ <div class="sh"><span>セット</span><span>kg</span><span>回</span><span>完了</span><span></span></div>
+ ${it.sets.map((s,j)=>`<div class="set ${s.done?'done':''}"><span>${j+1}</span><input id="w-${i}-${j}" type="number" inputmode="decimal" step="any" value="${s.w}" data-f="w" data-i="${i}" data-j="${j}"><input id="r-${i}-${j}" type="number" inputmode="numeric" value="${s.r}" data-f="r" data-i="${i}" data-j="${j}"><button class="chk" data-a="done" data-i="${i}" data-j="${j}">✓</button><button class="icon" data-a="rmSet" data-i="${i}" data-j="${j}">−</button></div>`).join('')}
+ <button class="btn full mt" data-a="addSet" data-i="${i}">＋ セット追加</button></div>`;
+}
+
+function sessCard(h,del){
+ const t=new Date(h.start);
+ return `<div class="card"><div class="row between"><div class="grow"><b>${esc(h.name||'ワークアウト')}</b><div class="sub">${pad(t.getHours())}:${pad(t.getMinutes())}〜 ・ ${fmtDur(h.end-h.start)} ・ ${num(sessVol(h))}kg</div></div>${del?`<button class="btn sm d" data-a="delS" data-id="${h.id}">削除</button>`:''}</div>
+ ${h.items.map(it=>`<div class="hl"><span>${esc(getEx(it.exId).name)}</span><span class="sub">${it.sets.map(s=>`${s.w}×${s.r}`).join(' / ')}</span></div>`).join('')}</div>`;
+}
+
+function vCalendar(){
+ const {y,m}=cal,first=new Date(y,m,1).getDay(),n=new Date(y,m+1,0).getDate(),by={},today=dkey(Date.now());
+ S.history.forEach(h=>(by[dkey(h.start)]=by[dkey(h.start)]||[]).push(h));
+ let cells='';
+ for(let i=0;i<first;i++)cells+='<div></div>';
+ for(let d=1;d<=n;d++){const k=`${y}-${pad(m+1)}-${pad(d)}`;cells+=`<button class="day ${by[k]?'has':''} ${k===cal.sel?'sel':''} ${k===today?'today':''}" data-a="cSel" data-k="${k}">${d}</button>`}
+ const mon=S.history.filter(h=>{const d=new Date(h.start);return d.getFullYear()===y&&d.getMonth()===m});
+ return `<div class="card"><div class="row between"><button class="icon" data-a="cMove" data-v="-1">‹</button><b>${y}年${m+1}月</b><button class="icon" data-a="cMove" data-v="1">›</button></div>
+ <div class="cal mt">${[...'日月火水木金土'].map(w=>`<div class="wd">${w}</div>`).join('')}${cells}</div>
+ <div class="row between mt sub"><span>今月 ${mon.length}回</span><span>総ボリューム ${num(mon.reduce((a,h)=>a+sessVol(h),0))}kg</span></div></div>
+ <div class="sec">${cal.sel.replace(/-/g,'/')}</div>${(by[cal.sel]||[]).map(h=>sessCard(h,true)).join('')||'<div class="empty">記録なし</div>'}`;
+}
+
+function vRoutines(){
+ return `<button class="btn p full" data-a="rNew">＋ 新しいルーティン</button>`+(S.routines.map(r=>`<div class="card mt"><div class="row between"><b class="grow">${esc(r.name)}</b><div class="row"><button class="btn sm" data-a="rEdit" data-id="${r.id}">編集</button><button class="btn sm d" data-a="rDel" data-id="${r.id}">削除</button></div></div>
+ <div class="sub mt">${r.items.map(i=>`${esc(getEx(i.exId).name)} ×${i.sets}`).join(' / ')}</div>
+ <button class="btn p full mt" data-a="startR" data-id="${r.id}">このルーティンで開始</button></div>`).join('')||'<div class="empty">ルーティンを作るとワンタップで開始できます</div>');
+}
+
+function barChart(vals,labels){
+ const W=320,H=120,max=Math.max(...vals,1),bw=W/vals.length;
+ return `<svg viewBox="0 0 ${W} ${H+16}" class="chart">${vals.map((v,i)=>{const h=v/max*H;return `<rect x="${i*bw+6}" y="${H-h}" width="${bw-12}" height="${h}" rx="4" class="bar" opacity="${i===vals.length-1?1:.5}"/><text x="${i*bw+bw/2}" y="${H+13}" text-anchor="middle">${labels[i]}</text>`}).join('')}</svg>`;
+}
+function lineChart(pts){
+ if(pts.length<2)return '<div class="sub mt">2回以上記録するとグラフが表示されます</div>';
+ const W=320,H=120,P=10,ys=pts.map(p=>p.y),mn=Math.min(...ys),mx=Math.max(...ys),r=mx-mn||1;
+ const xy=pts.map((p,i)=>[P+i*(W-2*P)/(pts.length-1),P+(H-2*P)*(1-(p.y-mn)/r)]);
+ return `<svg viewBox="0 0 ${W} ${H+16}" class="chart"><polyline points="${xy.map(a=>a.join(',')).join(' ')}" class="ln"/>${xy.map(a=>`<circle cx="${a[0]}" cy="${a[1]}" r="3.5" class="dot"/>`).join('')}<text x="${P}" y="${H+13}">${pts[0].x}</text><text x="${W-P}" y="${H+13}" text-anchor="end">${pts[pts.length-1].x}</text><text x="${P}" y="${P+2}">${mx.toFixed(1)}kg</text><text x="${P}" y="${H-2}">${mn.toFixed(1)}kg</text></svg>`;
+}
+
+function vStats(){
+ const ws=weekStart(new Date()),vals=[],labels=[];
+ for(let i=7;i>=0;i--){const s=new Date(ws);s.setDate(s.getDate()-7*i);const e=new Date(s);e.setDate(e.getDate()+7);vals.push(S.history.filter(h=>h.start>=s&&h.start<e).reduce((a,h)=>a+sessVol(h),0));labels.push(`${s.getMonth()+1}/${s.getDate()}`)}
+ const wk=S.history.filter(h=>h.start>=ws),n=new Date(),mon=S.history.filter(h=>{const d=new Date(h.start);return d.getFullYear()===n.getFullYear()&&d.getMonth()===n.getMonth()});
+ const since=Date.now()-30*864e5,pc={};
+ S.history.filter(h=>h.start>=since).forEach(h=>h.items.forEach(it=>{const p=getEx(it.exId).part;pc[p]=(pc[p]||0)+it.sets.length}));
+ const pmax=Math.max(1,...Object.values(pc));
+ const done=[...new Set(S.history.flatMap(h=>h.items.map(i=>i.exId)))].filter(id=>S.exercises.some(e=>e.id===id));
+ if(!done.includes(statEx))statEx=done[0]||'';
+ let prog='<div class="sub mt">まだ記録がありません</div>';
+ if(statEx){
+  const rows=S.history.filter(h=>h.items.some(i=>i.exId===statEx)).map(h=>{const sets=h.items.find(i=>i.exId===statEx).sets,d=new Date(h.start);return{x:`${d.getMonth()+1}/${d.getDate()}`,y:Math.max(...sets.map(e1rm)),w:Math.max(...sets.map(s=>+s.w))}});
+  prog=`<div class="tiles mt"><div><b>${Math.max(...rows.map(r=>r.w))}</b><span class="sub">最大重量kg</span></div><div><b>${Math.max(...rows.map(r=>r.y)).toFixed(1)}</b><span class="sub">推定1RM kg</span></div><div><b>${rows.length}</b><span class="sub">実施回数</span></div></div><div class="sub mt">推定1RMの推移</div>${lineChart(rows.slice(-20))}`;
+ }
+ return `<div class="card tiles"><div><b>${wk.length}</b><span class="sub">今週の回数</span></div><div><b>${mon.length}</b><span class="sub">今月の回数</span></div><div><b>${S.history.length}</b><span class="sub">累計</span></div></div>
+ <div class="card"><b>週間ボリューム</b><div class="sub">今週 ${num(vals[7])}kg</div>${barChart(vals,labels)}</div>
+ <div class="card"><b>部位別セット数</b><span class="sub">（直近30日）</span>${PARTS.map(p=>`<div class="pbar"><span>${p}</span><div><i style="width:${(pc[p]||0)/pmax*100}%"></i></div><span class="sub">${pc[p]||0}</span></div>`).join('')}</div>
+ <div class="card"><b>種目別の成長</b>${done.length?`<select class="inp full mt" id="statEx">${done.map(id=>`<option value="${id}" ${id===statEx?'selected':''}>${esc(getEx(id).name)}</option>`).join('')}</select>`:''}${prog}</div>
+ <div class="sec">設定</div>
+ <div class="card"><div class="row between"><span>休憩タイマー</span><select class="inp" id="restSel">${[30,45,60,90,120,150,180,240,300].map(v=>`<option value="${v}" ${v===S.rest?'selected':''}>${v}秒</option>`).join('')}</select></div></div>
+ <div class="card"><div class="sub">${uref?'記録はアカウントに保存され、どの端末からでも見られます':'記録はこの端末のブラウザに保存されています'}</div><div class="row mt"><button class="btn grow" data-a="exp">バックアップ書き出し</button><button class="btn grow" data-a="imp">読み込み</button></div><input type="file" id="imp" accept=".json,application/json" hidden><button class="btn d full mt" data-a="reset">全データ削除</button></div>`;
+}
+
+function modal(html){$('#modal').innerHTML=`<div class="sheet">${html}</div>`;$('#modal').hidden=false;document.body.style.overflow='hidden'}
+function closeModal(){$('#modal').hidden=true;document.body.style.overflow='';pick=null}
+
+function openPicker(cb,back){
+ pick={part:'すべて',q:'',sel:[],cb,back};
+ modal(`<div class="mh"><b>種目を選択</b><button class="icon" data-a="close">✕</button></div>
+ <input class="inp full" id="pq" placeholder="種目を検索">
+ <div class="chips" id="pchips"></div><div id="plist"></div>
+ <div class="row mt"><input class="inp grow" id="nxName" placeholder="オリジナル種目を追加"><select class="inp" id="nxPart">${PARTS.map(p=>`<option>${p}</option>`).join('')}</select><button class="btn" data-a="newEx">追加</button></div>
+ <button class="btn p full mt" id="pgo" data-a="pickGo"></button>`);
+ renderPick();
+}
+function renderPick(){
+ $('#pchips').innerHTML=['すべて',...PARTS].map(p=>`<button class="chip ${p===pick.part?'on':''}" data-a="pPart" data-p="${p}">${p}</button>`).join('');
+ const q=pick.q.toLowerCase(),l=S.exercises.filter(e=>(pick.part==='すべて'||e.part===pick.part)&&e.name.toLowerCase().includes(q));
+ $('#plist').innerHTML=l.map(e=>`<button class="li ${pick.sel.includes(e.id)?'on':''}" data-a="pTog" data-id="${e.id}"><span>${esc(e.name)}</span><span class="tag">${e.part}</span></button>`).join('')||'<div class="empty">該当なし</div>';
+ $('#pgo').textContent=pick.sel.length?`${pick.sel.length}種目を追加`:'種目を選んでください';
+}
+
+function openRedit(r){redit=r?clone(r):{id:null,name:'',items:[]};renderRedit()}
+function renderRedit(){
+ modal(`<div class="mh"><b>${redit.id?'ルーティン編集':'新しいルーティン'}</b><button class="icon" data-a="close">✕</button></div>
+ <input class="inp full" id="rname" placeholder="ルーティン名（例: 胸の日）" value="${esc(redit.name)}">
+ <div class="mt">${redit.items.map((it,i)=>`<div class="ritem"><span class="grow">${esc(getEx(it.exId).name)}</span><button class="icon" data-a="rSet" data-i="${i}" data-v="-1">−</button><span class="n">${it.sets}セット</span><button class="icon" data-a="rSet" data-i="${i}" data-v="1">＋</button><button class="icon" data-a="rRm" data-i="${i}">✕</button></div>`).join('')||'<div class="empty">種目がありません</div>'}</div>
+ <button class="btn full mt" data-a="rAdd">＋ 種目を追加</button>
+ <button class="btn p full mt" data-a="rSave">保存</button>`);
+}
+
+async function finish(){
+ const c=S.current;
+ const items=c.items.map(it=>({exId:it.exId,sets:it.sets.filter(s=>s.done).map(s=>({w:+s.w||0,r:+s.r||0}))})).filter(it=>it.sets.length);
+ if(!items.length){if(await ask('完了したセットがありません。このワークアウトを破棄しますか？',{ok:'破棄',danger:true})){S.current=null;rest=null;save();render()}return}
+ if(!await ask('ワークアウトを完了しますか？',{ok:'完了'}))return;
+ const prs=items.filter(it=>{const prev=S.history.flatMap(h=>h.items.filter(i=>i.exId===it.exId).flatMap(i=>i.sets.map(s=>s.w)));return prev.length&&Math.max(...it.sets.map(s=>s.w))>Math.max(...prev)}).map(it=>`<div class="pr">🏆 ${esc(getEx(it.exId).name)} ${Math.max(...it.sets.map(s=>s.w))}kg 自己ベスト更新！</div>`).join('');
+ const h={id:uid(),name:c.name,start:c.start,end:Date.now(),items};
+ S.current=null;rest=null;putSess(h);render();
+ modal(`<div class="hero"><div class="big">🔥 お疲れさま！</div><div class="tiles"><div><b>${fmtDur(h.end-h.start)}</b><span class="sub">時間</span></div><div><b>${num(sessVol(h))}</b><span class="sub">kg</span></div><div><b>${items.reduce((a,i)=>a+i.sets.length,0)}</b><span class="sub">セット</span></div></div>${prs}<button class="btn p full mt" data-a="close">閉じる</button></div>`);
+}
+
+async function exportData(){
+ const data=JSON.stringify(S),filename=`liftlog-${dkey(Date.now())}.json`;
+ const dl=window.claude&&window.claude.use?await window.claude.use('downloads'):undefined;
+ if(dl){try{await dl.save({filename,data});toast('書き出しました')}catch(e){if(e&&e.code!=='declined')toast('書き出せませんでした')}return}
+ if(dl===null)return toast('この画面では書き出せません');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download=filename;a.click();
+}
+
+function startRest(){rest={end:Date.now()+S.rest*1000,total:S.rest};tick()}
+function beep(){
+ try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}
+ if(!actx)return;
+ try{[0,.25].forEach(t=>{const o=actx.createOscillator(),g=actx.createGain();o.connect(g);g.connect(actx.destination);o.frequency.value=880;g.gain.value=.25;o.start(actx.currentTime+t);o.stop(actx.currentTime+t+.18)})}catch(e){}
+}
+function tick(){
+ if(!S)return;
+ const el=$('#elapsed');if(el&&S.current)el.textContent=fmtDur(Date.now()-S.current.start);
+ const bar=$('#rest');
+ if(!rest){bar.hidden=true;return}
+ const left=Math.ceil((rest.end-Date.now())/1000);
+ if(left<=0){rest=null;bar.hidden=true;beep();return}
+ bar.hidden=false;
+ bar.querySelector('.t').textContent=`${Math.floor(left/60)}:${pad(left%60)}`;
+ bar.querySelector('.fill').style.width=Math.min(100,left/rest.total*100)+'%';
+}
+
+const ACT={
+ tab:d=>{tab=d.tab;render();scrollTo(0,0)},
+ start:()=>startWorkout(),
+ startR:d=>{
+  if(S.current){toast('進行中のワークアウトがあります');tab='workout';render();return}
+  const r=S.routines.find(x=>x.id===d.id);
+  startWorkout(r.items.filter(i=>S.exercises.some(e=>e.id===i.exId)).map(i=>({exId:i.exId,sets:makeSets(i.exId,i.sets)})),r.name);
+ },
+ addEx:()=>openPicker(ids=>{ids.forEach(id=>S.current.items.push({exId:id,sets:makeSets(id)}));save();closeModal();render()}),
+ rmEx:async d=>{if(await ask('この種目を削除しますか？',{ok:'削除',danger:true})){S.current.items.splice(+d.i,1);save();render()}},
+ addSet:d=>{const ss=S.current.items[+d.i].sets,l=ss[ss.length-1];ss.push({w:l?l.w:'',r:l?l.r:'',done:false});save();render()},
+ rmSet:d=>{S.current.items[+d.i].sets.splice(+d.j,1);save();render()},
+ done:d=>{const s=S.current.items[+d.i].sets[+d.j];s.done=!s.done;save();if(s.done)startRest();render()},
+ finish:()=>finish(),
+ discard:async()=>{if(await ask('このワークアウトを破棄しますか？',{ok:'破棄',danger:true})){S.current=null;rest=null;save();render()}},
+ saveR:async()=>{
+  const c=S.current;if(!c.items.length)return toast('種目がありません');
+  const n=await ask('ルーティン名',{input:c.name||'',ph:'例: 胸の日',ok:'保存'});if(!n)return;
+  S.routines.push({id:uid(),name:n,items:c.items.map(it=>({exId:it.exId,sets:Math.max(1,it.sets.length)}))});save();toast('ルーティンを保存しました');
+ },
+ restAdd:d=>{if(rest){rest.end+=+d.s*1000;rest.total=Math.max(1,rest.total+ +d.s);tick()}},
+ restSkip:()=>{rest=null;tick()},
+ close:()=>{if(pick&&pick.back){const b=pick.back;pick=null;b()}else closeModal()},
+ pPart:d=>{pick.part=d.p;renderPick()},
+ pTog:d=>{const i=pick.sel.indexOf(d.id);i<0?pick.sel.push(d.id):pick.sel.splice(i,1);renderPick()},
+ pickGo:()=>{if(pick.sel.length){const {cb,sel}=pick;pick=null;cb(sel)}},
+ newEx:()=>{
+  const name=$('#nxName').value.trim(),part=$('#nxPart').value;if(!name)return;
+  if(S.exercises.some(e=>e.name===name))return toast('同じ名前の種目があります');
+  const e={id:uid(),name,part};S.exercises.push(e);save();
+  pick.sel.push(e.id);pick.part=part;pick.q='';$('#pq').value='';$('#nxName').value='';renderPick();
+ },
+ cSel:d=>{cal.sel=d.k;render()},
+ cMove:d=>{const x=new Date(cal.y,cal.m+ +d.v,1);cal.y=x.getFullYear();cal.m=x.getMonth();render()},
+ delS:async d=>{if(await ask('この記録を削除しますか？',{ok:'削除',danger:true})){delSess(d.id);render()}},
+ rNew:()=>openRedit(),
+ rEdit:d=>openRedit(S.routines.find(r=>r.id===d.id)),
+ rDel:async d=>{if(await ask('このルーティンを削除しますか？',{ok:'削除',danger:true})){S.routines=S.routines.filter(r=>r.id!==d.id);save();render()}},
+ rSet:d=>{const it=redit.items[+d.i];it.sets=Math.max(1,it.sets+ +d.v);renderRedit()},
+ rRm:d=>{redit.items.splice(+d.i,1);renderRedit()},
+ rAdd:()=>openPicker(ids=>{ids.forEach(id=>redit.items.push({exId:id,sets:3}));renderRedit()},renderRedit),
+ rSave:()=>{
+  if(!redit.name.trim())return toast('ルーティン名を入力してください');
+  if(!redit.items.length)return toast('種目を追加してください');
+  if(redit.id)S.routines=S.routines.map(r=>r.id===redit.id?redit:r);else S.routines.push({...redit,id:uid()});
+  save();closeModal();render();
+ },
+ exp:()=>exportData(),
+ imp:()=>$('#imp').click(),
+ reset:async()=>{if(await ask('全データを削除します。元に戻せません。よろしいですか？',{ok:'すべて削除',danger:true}))await replaceAll(normalize(defaults()))}
+};
+
+document.addEventListener('click',e=>{
+ if(!S)return;
+ if(!actx)try{actx=new (window.AudioContext||window.webkitAudioContext)()}catch(_){}
+ if(e.target.id==='modal')return ACT.close();
+ const b=e.target.closest('[data-a]');
+ if(b&&ACT[b.dataset.a])ACT[b.dataset.a](b.dataset,b);
+});
+document.addEventListener('input',e=>{
+ const t=e.target,d=t.dataset;
+ if(d.f&&S.current){S.current.items[+d.i].sets[+d.j][d.f]=t.value===''?'':+t.value;save();const v=$('#tvol');if(v)v.textContent=num(sessVol(S.current))}
+ else if(t.id==='pq'){pick.q=t.value;renderPick()}
+ else if(t.id==='rname')redit.name=t.value;
+});
+document.addEventListener('change',async e=>{
+ const t=e.target;
+ if(t.id==='restSel'){S.rest=+t.value;save()}
+ else if(t.id==='statEx'){statEx=t.value;render()}
+ else if(t.id==='imp'&&t.files[0]){
+  const f=t.files[0];t.value='';
+  let d;
+  try{d=JSON.parse(await f.text());if(!Array.isArray(d.exercises)||!Array.isArray(d.history))throw 0}catch(_){return toast('このファイルは読み込めません')}
+  if(await ask('現在のデータを読み込んだデータで上書きしますか？',{ok:'上書き',danger:true})){await replaceAll(normalize(d));toast('読み込みました')}
+ }
+});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&uref&&saveT)flush()});
+
+load().then(()=>{render();setInterval(tick,500)});
+</script>
+
+</body></html>
