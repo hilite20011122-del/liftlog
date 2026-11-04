@@ -52,6 +52,7 @@ ul{padding-left:18px;margin-top:6px;font-size:14px;line-height:1.7}
 .set{border-radius:10px;padding:2px 0}
 .set input{background:var(--card2);border:0;border-radius:8px;color:var(--text);text-align:center;padding:9px 4px;font-size:16px;width:100%;min-width:0}
 .set.done{background:var(--ok-soft)}
+.rs{width:auto;padding:6px 10px;font-size:14px}
 .chk{background:var(--card2);border:0;border-radius:8px;height:38px;color:var(--sub);font-size:18px}
 .set.done .chk{background:var(--ok);color:var(--white)}
 #rest{position:fixed;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom,0px));background:var(--card2);z-index:9;overflow:hidden;border-top:1px solid var(--line)}
@@ -191,6 +192,8 @@ function fmtDur(ms){const s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600)
 function num(n){return Math.round(n).toLocaleString()}
 function r1(n){return Math.round((+n||0)*10)/10}
 function clone(o){return JSON.parse(JSON.stringify(o))}
+const REST_OPTS=[30,45,60,90,120,150,180,240,300];
+function fmtRest(v){return v<60?`${v}秒`:`${Math.floor(v/60)}分${v%60?`${v%60}秒`:''}`}
 function getEx(id){return S.exercises.find(e=>e.id===id)||{name:'(削除済み)',part:'-'}}
 function partOf(name){for(const p of PARTS)if(DEFAULT_EX[p].includes(name))return p;return '腹'}
 function exIdByName(name){let e=S.exercises.find(x=>x.name===name);if(!e){e={id:uid(),name,part:partOf(name)};S.exercises.push(e)}return e.id}
@@ -332,6 +335,7 @@ function exCard(it,i){
  return `<div class="card"><div class="row between"><div class="row grow"><b>${esc(e.name)}</b><span class="tag">${e.part}</span></div><button class="icon" data-a="rmEx" data-i="${i}">✕</button></div>
  ${it.rep?`<div class="sub mt">目標: ${esc(it.rep)}</div>`:''}
  ${prev?`<div class="sub mt">前回: ${prev.map(s=>`${s.w}kg×${s.r}`).join(', ')}</div>`:''}
+ <div class="row between mt"><span class="sub">休憩タイマー</span><select class="inp rs" id="rs-${i}" data-ex="${it.exId}"><option value="">標準（${fmtRest(S.rest)}）</option>${REST_OPTS.map(v=>`<option value="${v}" ${v===e.rest?'selected':''}>${fmtRest(v)}</option>`).join('')}</select></div>
  <div class="sh"><span>セット</span><span>kg</span><span>回</span><span>完了</span><span></span></div>
  ${it.sets.map((s,j)=>`<div class="set ${s.done?'done':''}"><span>${j+1}</span><input id="w-${i}-${j}" type="number" inputmode="decimal" step="any" value="${s.w}" data-f="w" data-i="${i}" data-j="${j}"><input id="r-${i}-${j}" type="number" inputmode="numeric" value="${s.r}" data-f="r" data-i="${i}" data-j="${j}"><button class="chk" data-a="done" data-i="${i}" data-j="${j}">✓</button><button class="icon" data-a="rmSet" data-i="${i}" data-j="${j}">−</button></div>`).join('')}
  <button class="btn full mt" data-a="addSet" data-i="${i}">＋ セット追加</button></div>`;
@@ -534,7 +538,7 @@ function vStats(){
  <div class="card"><b>部位別セット数</b><span class="sub">（直近30日）</span>${PARTS.map(p=>`<div class="pbar"><span>${p}</span><div><i style="width:${(pc[p]||0)/pmax*100}%"></i></div><span class="sub">${pc[p]||0}</span></div>`).join('')}</div>
  <div class="card"><b>種目別の成長</b>${done.length?`<select class="inp full mt" id="statEx">${done.map(id=>`<option value="${id}" ${id===statEx?'selected':''}>${esc(getEx(id).name)}</option>`).join('')}</select>`:''}${prog}</div>
  <div class="sec">設定</div>
- <div class="card"><div class="row between"><span>休憩タイマー</span><select class="inp" id="restSel">${[30,45,60,90,120,150,180,240,300].map(v=>`<option value="${v}" ${v===S.rest?'selected':''}>${v}秒</option>`).join('')}</select></div></div>
+ <div class="card"><div class="row between"><span>休憩タイマー（標準）</span><select class="inp" id="restSel">${REST_OPTS.map(v=>`<option value="${v}" ${v===S.rest?'selected':''}>${fmtRest(v)}</option>`).join('')}</select></div><div class="sub mt">種目ごとの休憩時間は、ワークアウト中の各種目のカードで変更できます。</div></div>
  <div class="card"><div class="sub">${uref?'記録はアカウントに保存され、どの端末からでも見られます':'記録はこの端末のブラウザに保存されています'}</div><div class="row mt"><button class="btn grow" data-a="exp">バックアップ書き出し</button><button class="btn grow" data-a="imp">読み込み</button></div><input type="file" id="imp" accept=".json,application/json" hidden><button class="btn d full mt" data-a="reset">全データ削除</button></div>`;
 }
 
@@ -635,7 +639,7 @@ async function exportData(){
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download=filename;a.click();
 }
 
-function startRest(){rest={end:Date.now()+S.rest*1000,total:S.rest};tick()}
+function startRest(sec){rest={end:Date.now()+sec*1000,total:sec};tick()}
 function beep(){
  try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}
  if(!actx)return;
@@ -665,7 +669,7 @@ const ACT={
  rmEx:async d=>{if(await ask('この種目を削除しますか？',{ok:'削除',danger:true})){S.current.items.splice(+d.i,1);save();render()}},
  addSet:d=>{const ss=S.current.items[+d.i].sets,l=ss[ss.length-1];ss.push({w:l?l.w:'',r:l?l.r:'',done:false});save();render()},
  rmSet:d=>{S.current.items[+d.i].sets.splice(+d.j,1);save();render()},
- done:d=>{const s=S.current.items[+d.i].sets[+d.j];s.done=!s.done;save();if(s.done)startRest();render()},
+ done:d=>{const it=S.current.items[+d.i],s=it.sets[+d.j];s.done=!s.done;save();if(s.done)startRest(getEx(it.exId).rest||S.rest);render()},
  finish:()=>finish(),
  discard:async()=>{if(await ask('このワークアウトを破棄しますか？',{ok:'破棄',danger:true})){S.current=null;rest=null;save();render()}},
  saveR:async()=>{
@@ -741,6 +745,7 @@ document.addEventListener('input',e=>{
 document.addEventListener('change',async e=>{
  const t=e.target;
  if(t.id==='restSel'){S.rest=+t.value;save()}
+ else if(t.id.startsWith('rs-')){const ex=S.exercises.find(x=>x.id===t.dataset.ex);if(ex){if(t.value)ex.rest=+t.value;else delete ex.rest;save()}}
  else if(t.id==='statEx'){statEx=t.value;render()}
  else if(t.id==='pl-goal'){plan.goal=t.value;renderPlan()}
  else if(t.id==='pl-days'){plan.days=+t.value;renderPlan()}
