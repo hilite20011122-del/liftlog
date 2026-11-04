@@ -52,7 +52,8 @@ ul{padding-left:18px;margin-top:6px;font-size:14px;line-height:1.7}
 .set{border-radius:10px;padding:2px 0}
 .set input{background:var(--card2);border:0;border-radius:8px;color:var(--text);text-align:center;padding:9px 4px;font-size:16px;width:100%;min-width:0}
 .set.done{background:var(--ok-soft)}
-.rs{width:auto;padding:6px 10px;font-size:14px}
+.rgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pfoot{position:sticky;bottom:0;display:flex;justify-content:flex-end;gap:8px;margin-top:10px;padding-top:12px;background:var(--card)}
 .chk{background:var(--card2);border:0;border-radius:8px;height:38px;color:var(--sub);font-size:18px}
 .set.done .chk{background:var(--ok);color:var(--white)}
 #rest{position:fixed;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom,0px));background:var(--card2);z-index:9;overflow:hidden;border-top:1px solid var(--line)}
@@ -138,6 +139,20 @@ const DEFAULT_EX={
  腹:['クランチ','レッグレイズ','プランク','アブローラー','ケーブルクランチ'],
  有酸素:['ランニング','ウォーキング','バイク','ローイング']
 };
+const MACHINE_ADD={
+ 胸:['ペックフライ（バタフライ）','インクラインチェストプレス','デクラインチェストプレス','アイソラテラル・チェストプレス','スミスマシン・ベンチプレス','スミスマシン・インクラインベンチプレス','ケーブルフライ（ロー→ハイ）','アシストディップス'],
+ 背中:['アシスト懸垂（チンニングマシン）','マシンロウ','アイソラテラル・ロウ','アイソラテラル・ラットプルダウン','プルオーバーマシン','ストレートアームプルダウン','ワンハンドケーブルロウ','スミスマシン・ベントオーバーロウ','ロワーバックマシン'],
+ 脚:['ハックスクワット','45度レッグプレス','ペンデュラムスクワット','Vスクワット','スミスマシン・スクワット','シーテッドレッグカール','ライイングレッグカール','アダクション（内もも）','アブダクション（外もも）','グルートマシン','ケーブルキックバック','シーテッドカーフレイズ','スタンディングカーフレイズマシン'],
+ 肩:['マシンショルダープレス','スミスマシン・ショルダープレス','ラテラルレイズマシン','ケーブルサイドレイズ','リアデルトマシン（リバースペックフライ）','ケーブルリアレイズ','ケーブルフロントレイズ','スミスマシン・シュラッグ'],
+ 腕:['アームカールマシン','ケーブルカール','ケーブルハンマーカール（ロープ）','トライセプスエクステンションマシン','ロープ・プッシュダウン','ケーブル・オーバーヘッドエクステンション','ケーブル・トライセプスキックバック'],
+ 腹:['アブドミナルクランチマシン','ロータリートルソー（腹斜筋）','ケーブルウッドチョップ','ハンギングレッグレイズ（パワータワー）'],
+ 有酸素:['クロストレーナー','ステアクライマー','リカンベントバイク','スキーエルゴ']
+};
+for(const p in MACHINE_ADD)DEFAULT_EX[p].push(...MACHINE_ADD[p]);
+const EQS=['マシン','フリーウェイト','自重'];
+const BODY=new Set(['ディップス','腕立て伏せ','懸垂','バックエクステンション','カーフレイズ','クランチ','レッグレイズ','プランク','アブローラー','ランニング','ウォーキング','ハンギングレッグレイズ（パワータワー）']);
+const MACHINE=new Set(['チェストプレス','ケーブルクロスオーバー','ラットプルダウン','シーテッドロウ','レッグプレス','レッグエクステンション','レッグカール','フェイスプル','トライセプスプッシュダウン','ケーブルクランチ','バイク','ローイング',...Object.values(MACHINE_ADD).flat()]);
+function eqOf(e){return e.eq||(BODY.has(e.name)?'自重':MACHINE.has(e.name)||/マシン|ケーブル|スミス/.test(e.name)?'マシン':'フリーウェイト')}
 const TITLES={workout:'ワークアウト',calendar:'カレンダー',food:'食事',ai:'AI診断',routines:'ルーティン',stats:'マイページ'};
 const GOALS={bb:'ボディビル（筋肥大・見た目）',ath:'身体機能向上（筋力・運動能力）',mix:'両方（バランス重視）'};
 const GOAL_SHORT={bb:'ボディビル',ath:'機能向上',mix:'ハイブリッド'};
@@ -218,7 +233,7 @@ function ask(msg,o={}){
 }
 
 function defaults(){const s={exercises:[],routines:[],history:[],meals:[],current:null,rest:90,profile:{},diag:null};for(const p of PARTS)for(const n of DEFAULT_EX[p])s.exercises.push({id:uid(),name:n,part:p});return s}
-function normalize(s){s.routines=s.routines||[];s.history=s.history||[];s.meals=s.meals||[];s.rest=s.rest||90;s.current=s.current||null;s.profile=s.profile||{};s.diag=s.diag||null;s.history.sort((a,b)=>a.start-b.start);return s}
+function normalize(s){const have=new Set(s.exercises.map(e=>e.name));for(const p of PARTS)for(const n of DEFAULT_EX[p])if(!have.has(n))s.exercises.push({id:uid(),name:n,part:p});s.routines=s.routines||[];s.history=s.history||[];s.meals=s.meals||[];s.rest=s.rest||90;s.current=s.current||null;s.profile=s.profile||{};s.diag=s.diag||null;s.history.sort((a,b)=>a.start-b.start);return s}
 function timeout(p,ms){return Promise.race([p,new Promise((_,j)=>setTimeout(()=>j({code:'timeout'}),ms))])}
 function sessCol(){return uref.collection('sessions')}
 function mealCol(){return uref.collection('meals')}
@@ -303,7 +318,7 @@ async function replaceAll(next){
 
 function lastSets(exId){for(let i=S.history.length-1;i>=0;i--){const it=S.history[i].items.find(x=>x.exId===exId);if(it)return it.sets}return null}
 function makeSets(exId,n){const p=lastSets(exId);n=n||(p?p.length:3);return Array.from({length:n},(_,k)=>{const q=p&&p[Math.min(k,p.length-1)];return{w:q?q.w:'',r:q?q.r:'',done:false}})}
-function startWorkout(items,name){S.current={start:Date.now(),name:name||'',items:items||[]};save();tab='workout';render()}
+function startWorkout(items,name){S.current={start:null,name:name||'',items:items||[]};save();tab='workout';render()}
 
 function render(){
  const setup=!S.profile.birth;
@@ -323,7 +338,7 @@ function vWorkout(){
   if(today.length)h+=`<div class="sec">今日の記録</div>`+today.map(x=>sessCard(x)).join('');
   return h;
  }
- return `<div class="card live"><div class="row between"><div><div class="sub">${esc(c.name||'ワークアウト')}</div><div class="timer" id="elapsed">${fmtDur(Date.now()-c.start)}</div></div><div><div class="sub" style="text-align:right">ボリューム</div><div class="vol"><span id="tvol">${num(sessVol(c))}</span> kg</div></div></div></div>
+ return `<div class="card live"><div class="row between"><div><div class="sub">${esc(c.name||'ワークアウト')}</div><div class="timer" id="elapsed">${c.start?fmtDur(Date.now()-c.start):'00:00'}</div>${c.start?'':'<div class="sub">最初のセット完了でスタート</div>'}</div><div><div class="sub" style="text-align:right">ボリューム</div><div class="vol"><span id="tvol">${num(sessVol(c))}</span> kg</div></div></div></div>
  ${c.items.map(exCard).join('')||'<div class="empty">「種目を追加」から始めよう</div>'}
  <button class="btn p full" data-a="addEx">＋ 種目を追加</button>
  <div class="row mt"><button class="btn grow" data-a="saveR">ルーティンとして保存</button><button class="btn d grow" data-a="discard">破棄</button></div>
@@ -332,10 +347,9 @@ function vWorkout(){
 
 function exCard(it,i){
  const e=getEx(it.exId),prev=lastSets(it.exId);
- return `<div class="card"><div class="row between"><div class="row grow"><b>${esc(e.name)}</b><span class="tag">${e.part}</span></div><button class="icon" data-a="rmEx" data-i="${i}">✕</button></div>
+ return `<div class="card"><div class="row between"><div class="row grow"><b>${esc(e.name)}</b><span class="tag">${e.part}</span></div><button class="btn sm" data-a="restPick" data-i="${i}">⏱ ${fmtRest(e.rest||S.rest)}</button><button class="icon" data-a="rmEx" data-i="${i}">✕</button></div>
  ${it.rep?`<div class="sub mt">目標: ${esc(it.rep)}</div>`:''}
  ${prev?`<div class="sub mt">前回: ${prev.map(s=>`${s.w}kg×${s.r}`).join(', ')}</div>`:''}
- <div class="row between mt"><span class="sub">休憩タイマー</span><select class="inp rs" id="rs-${i}" data-ex="${it.exId}"><option value="">標準（${fmtRest(S.rest)}）</option>${REST_OPTS.map(v=>`<option value="${v}" ${v===e.rest?'selected':''}>${fmtRest(v)}</option>`).join('')}</select></div>
  <div class="sh"><span>セット</span><span>kg</span><span>回</span><span>完了</span><span></span></div>
  ${it.sets.map((s,j)=>`<div class="set ${s.done?'done':''}"><span>${j+1}</span><input id="w-${i}-${j}" type="number" inputmode="decimal" step="any" value="${s.w}" data-f="w" data-i="${i}" data-j="${j}"><input id="r-${i}-${j}" type="number" inputmode="numeric" value="${s.r}" data-f="r" data-i="${i}" data-j="${j}"><button class="chk" data-a="done" data-i="${i}" data-j="${j}">✓</button><button class="icon" data-a="rmSet" data-i="${i}" data-j="${j}">−</button></div>`).join('')}
  <button class="btn full mt" data-a="addSet" data-i="${i}">＋ セット追加</button></div>`;
@@ -538,7 +552,7 @@ function vStats(){
  <div class="card"><b>部位別セット数</b><span class="sub">（直近30日）</span>${PARTS.map(p=>`<div class="pbar"><span>${p}</span><div><i style="width:${(pc[p]||0)/pmax*100}%"></i></div><span class="sub">${pc[p]||0}</span></div>`).join('')}</div>
  <div class="card"><b>種目別の成長</b>${done.length?`<select class="inp full mt" id="statEx">${done.map(id=>`<option value="${id}" ${id===statEx?'selected':''}>${esc(getEx(id).name)}</option>`).join('')}</select>`:''}${prog}</div>
  <div class="sec">設定</div>
- <div class="card"><div class="row between"><span>休憩タイマー（標準）</span><select class="inp" id="restSel">${REST_OPTS.map(v=>`<option value="${v}" ${v===S.rest?'selected':''}>${fmtRest(v)}</option>`).join('')}</select></div><div class="sub mt">種目ごとの休憩時間は、ワークアウト中の各種目のカードで変更できます。</div></div>
+ <div class="card"><div class="row between"><span>休憩タイマー（標準）</span><select class="inp" id="restSel">${REST_OPTS.map(v=>`<option value="${v}" ${v===S.rest?'selected':''}>${fmtRest(v)}</option>`).join('')}</select></div><div class="sub mt">種目ごとの休憩時間は、ワークアウト中に各種目の ⏱ ボタンから変更できます。</div></div>
  <div class="card"><div class="sub">${uref?'記録はアカウントに保存され、どの端末からでも見られます':'記録はこの端末のブラウザに保存されています'}</div><div class="row mt"><button class="btn grow" data-a="exp">バックアップ書き出し</button><button class="btn grow" data-a="imp">読み込み</button></div><input type="file" id="imp" accept=".json,application/json" hidden><button class="btn d full mt" data-a="reset">全データ削除</button></div>`;
 }
 
@@ -546,19 +560,31 @@ function modal(html){$('#modal').innerHTML=`<div class="sheet">${html}</div>`;$(
 function closeModal(){$('#modal').hidden=true;document.body.style.overflow='';pick=null;plan=null;if(mealCtl)mealCtl.abort();mealCtl=null;mealDraft=null}
 
 function openPicker(cb,back){
- pick={part:'すべて',q:'',sel:[],cb,back};
+ pick={part:'すべて',eq:'すべて',q:'',sel:[],cb,back};
  modal(`<div class="mh"><b>種目を選択</b><button class="icon" data-a="close">✕</button></div>
  <input class="inp full" id="pq" placeholder="種目を検索">
- <div class="chips" id="pchips"></div><div id="plist"></div>
- <div class="row mt"><input class="inp grow" id="nxName" placeholder="オリジナル種目を追加"><select class="inp" id="nxPart">${PARTS.map(p=>`<option>${p}</option>`).join('')}</select><button class="btn" data-a="newEx">追加</button></div>
- <button class="btn p full mt" id="pgo" data-a="pickGo"></button>`);
+ <div class="chips" id="pchips"></div><div class="chips" id="peq"></div><div id="plist"></div>
+ <div class="pfoot"><button class="btn" data-a="newEx">＋ 追加</button><button class="btn p" id="pgo" data-a="pickGo"></button></div>`);
  renderPick();
 }
 function renderPick(){
  $('#pchips').innerHTML=['すべて',...PARTS].map(p=>`<button class="chip ${p===pick.part?'on':''}" data-a="pPart" data-p="${p}">${p}</button>`).join('');
- const q=pick.q.toLowerCase(),l=S.exercises.filter(e=>(pick.part==='すべて'||e.part===pick.part)&&e.name.toLowerCase().includes(q));
- $('#plist').innerHTML=l.map(e=>`<button class="li ${pick.sel.includes(e.id)?'on':''}" data-a="pTog" data-id="${e.id}"><span>${esc(e.name)}</span><span class="tag">${e.part}</span></button>`).join('')||'<div class="empty">該当なし</div>';
- $('#pgo').textContent=pick.sel.length?`${pick.sel.length}種目を追加`:'種目を選んでください';
+ $('#peq').innerHTML='<span class="sub" style="align-self:center">器具</span>'+['すべて',...EQS].map(q=>`<button class="chip ${q===pick.eq?'on':''}" data-a="pEq" data-q="${q}">${q}</button>`).join('');
+ const q=pick.q.toLowerCase(),l=S.exercises.filter(e=>(pick.part==='すべて'||e.part===pick.part)&&(pick.eq==='すべて'||eqOf(e)===pick.eq)&&e.name.toLowerCase().includes(q)).sort((a,b)=>PARTS.indexOf(a.part)-PARTS.indexOf(b.part));
+ $('#plist').innerHTML=l.map(e=>`<button class="li ${pick.sel.includes(e.id)?'on':''}" data-a="pTog" data-id="${e.id}"><span>${esc(e.name)}</span><span class="tag">${e.part}・${eqOf(e)}</span></button>`).join('')||'<div class="empty">該当なし</div>';
+ $('#pgo').textContent=pick.sel.length?`設定完了（${pick.sel.length}）`:'設定完了';
+ $('#pgo').disabled=!pick.sel.length;
+}
+function askNewEx(part,eq){
+ return new Promise(res=>{
+  const d=$('#dlg');
+  d.innerHTML=`<div class="dbox"><b>オリジナル種目を追加</b><input class="inp full mt" id="nxName" placeholder="種目名"><select class="inp full mt" id="nxPart">${PARTS.map(p=>`<option ${p===part?'selected':''}>${p}</option>`).join('')}</select><select class="inp full mt" id="nxEq">${EQS.map(q=>`<option ${q===eq?'selected':''}>${q}</option>`).join('')}</select><div class="row mt"><button class="btn grow" id="dlgNo">キャンセル</button><button class="btn grow p" id="dlgYes">追加</button></div></div>`;
+  d.hidden=false;
+  const done=v=>{d.hidden=true;d.innerHTML='';res(v)};
+  $('#dlgNo').onclick=()=>done(null);
+  $('#dlgYes').onclick=()=>{const name=$('#nxName').value.trim();if(!name)return toast('種目名を入力してください');done({name,part:$('#nxPart').value,eq:$('#nxEq').value})};
+  $('#nxName').focus();
+ });
 }
 
 function openRedit(r){redit=r?clone(r):{id:null,name:'',items:[]};renderRedit()}
@@ -576,7 +602,7 @@ async function finish(){
  if(!items.length){if(await ask('完了したセットがありません。このワークアウトを破棄しますか？',{ok:'破棄',danger:true})){S.current=null;rest=null;save();render()}return}
  if(!await ask('ワークアウトを完了しますか？',{ok:'完了'}))return;
  const prs=items.filter(it=>{const prev=S.history.flatMap(h=>h.items.filter(i=>i.exId===it.exId).flatMap(i=>i.sets.map(s=>s.w)));return prev.length&&Math.max(...it.sets.map(s=>s.w))>Math.max(...prev)}).map(it=>`<div class="pr">🏆 ${esc(getEx(it.exId).name)} ${Math.max(...it.sets.map(s=>s.w))}kg 自己ベスト更新！</div>`).join('');
- const h={id:uid(),name:c.name,start:c.start,end:Date.now(),items};
+ const h={id:uid(),name:c.name,start:c.start||Date.now(),end:Date.now(),items};
  S.current=null;rest=null;putSess(h);render();
  modal(`<div class="hero"><div class="big">🔥 お疲れさま！</div><div class="tiles"><div><b>${fmtDur(h.end-h.start)}</b><span class="sub">時間</span></div><div><b>${num(sessVol(h))}</b><span class="sub">kg</span></div><div><b>${items.reduce((a,i)=>a+i.sets.length,0)}</b><span class="sub">セット</span></div></div>${prs}<button class="btn p full mt" data-a="close">閉じる</button></div>`);
 }
@@ -647,7 +673,7 @@ function beep(){
 }
 function tick(){
  if(!S)return;
- const el=$('#elapsed');if(el&&S.current)el.textContent=fmtDur(Date.now()-S.current.start);
+ const el=$('#elapsed');if(el&&S.current&&S.current.start)el.textContent=fmtDur(Date.now()-S.current.start);
  const bar=$('#rest');
  if(!rest){bar.hidden=true;return}
  const left=Math.ceil((rest.end-Date.now())/1000);
@@ -669,7 +695,7 @@ const ACT={
  rmEx:async d=>{if(await ask('この種目を削除しますか？',{ok:'削除',danger:true})){S.current.items.splice(+d.i,1);save();render()}},
  addSet:d=>{const ss=S.current.items[+d.i].sets,l=ss[ss.length-1];ss.push({w:l?l.w:'',r:l?l.r:'',done:false});save();render()},
  rmSet:d=>{S.current.items[+d.i].sets.splice(+d.j,1);save();render()},
- done:d=>{const it=S.current.items[+d.i],s=it.sets[+d.j];s.done=!s.done;save();if(s.done)startRest(getEx(it.exId).rest||S.rest);render()},
+ done:d=>{const it=S.current.items[+d.i],s=it.sets[+d.j];s.done=!s.done;if(s.done&&!S.current.start)S.current.start=Date.now();save();if(s.done)startRest(getEx(it.exId).rest||S.rest);render()},
  finish:()=>finish(),
  discard:async()=>{if(await ask('このワークアウトを破棄しますか？',{ok:'破棄',danger:true})){S.current=null;rest=null;save();render()}},
  saveR:async()=>{
@@ -681,14 +707,22 @@ const ACT={
  restSkip:()=>{rest=null;tick()},
  close:()=>{if(pick&&pick.back){const b=pick.back;pick=null;b()}else closeModal()},
  pPart:d=>{pick.part=d.p;renderPick()},
+ pEq:d=>{pick.eq=d.q;renderPick()},
  pTog:d=>{const i=pick.sel.indexOf(d.id);i<0?pick.sel.push(d.id):pick.sel.splice(i,1);renderPick()},
  pickGo:()=>{if(pick.sel.length){const {cb,sel}=pick;pick=null;cb(sel)}},
- newEx:()=>{
-  const name=$('#nxName').value.trim(),part=$('#nxPart').value;if(!name)return;
-  if(S.exercises.some(e=>e.name===name))return toast('同じ名前の種目があります');
-  const e={id:uid(),name,part};S.exercises.push(e);save();
-  pick.sel.push(e.id);pick.part=part;pick.q='';$('#pq').value='';$('#nxName').value='';renderPick();
+ newEx:async()=>{
+  const r=await askNewEx(pick&&pick.part!=='すべて'?pick.part:'胸',pick&&pick.eq!=='すべて'?pick.eq:'フリーウェイト');if(!r||!pick)return;
+  if(S.exercises.some(e=>e.name===r.name))return toast('同じ名前の種目があります');
+  const e={id:uid(),name:r.name,part:r.part,eq:r.eq};S.exercises.push(e);save();
+  pick.sel.push(e.id);pick.part=r.part;pick.eq=r.eq;pick.q='';$('#pq').value='';renderPick();
  },
+ restPick:d=>{
+  const ex=S.exercises.find(x=>x.id===S.current.items[+d.i].exId);if(!ex)return;
+  modal(`<div class="mh"><b>${esc(ex.name)}の休憩時間</b><button class="icon" data-a="close">✕</button></div>
+  <div class="rgrid"><button class="chip ${ex.rest?'':'on'}" data-a="restSet" data-ex="${ex.id}" data-v="">標準（${fmtRest(S.rest)}）</button>${REST_OPTS.map(v=>`<button class="chip ${v===ex.rest?'on':''}" data-a="restSet" data-ex="${ex.id}" data-v="${v}">${fmtRest(v)}</button>`).join('')}</div>
+  <div class="sub mt">次回以降のワークアウトでも、この種目はこの休憩時間になります。</div>`);
+ },
+ restSet:d=>{const ex=S.exercises.find(x=>x.id===d.ex);if(ex){if(d.v)ex.rest=+d.v;else delete ex.rest;save()}closeModal();render()},
  cSel:d=>{cal.sel=d.k;render()},
  cMove:d=>{const x=new Date(cal.y,cal.m+ +d.v,1);cal.y=x.getFullYear();cal.m=x.getMonth();render()},
  delS:async d=>{if(await ask('この記録を削除しますか？',{ok:'削除',danger:true})){delSess(d.id);render()}},
@@ -745,7 +779,6 @@ document.addEventListener('input',e=>{
 document.addEventListener('change',async e=>{
  const t=e.target;
  if(t.id==='restSel'){S.rest=+t.value;save()}
- else if(t.id.startsWith('rs-')){const ex=S.exercises.find(x=>x.id===t.dataset.ex);if(ex){if(t.value)ex.rest=+t.value;else delete ex.rest;save()}}
  else if(t.id==='statEx'){statEx=t.value;render()}
  else if(t.id==='pl-goal'){plan.goal=t.value;renderPlan()}
  else if(t.id==='pl-days'){plan.days=+t.value;renderPlan()}
