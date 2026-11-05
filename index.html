@@ -692,6 +692,7 @@ const MOVES={
  chop:{v:'f',r:'p',at:[100,95],c:{H:85,S:92},a:{T:-82,U:-20,F:-128,U2:-28,F2:-28},b:{T:-98,U:124,F:124,U2:110,F2:55},lin:['U','F','U2','F2'],cb:[196,10],c1:1}
 };
 const LEN={T:40,U:22,F:20,H:28,S:27,O:9};
+for(const m of Object.values(MOVES))if(m.v==='f'&&m.lin)for(const K of m.lin.slice())if(K.length===1&&!m.lin.includes(K+'2'))m.lin.push(K+'2');
 for(const m of Object.values(MOVES))for(const P of ['a','b']){
  const o=m[P]={T:-90,U:90,F:90,H:90,S:90,...m.c,...m[P]};
  if(m.v==='f'){for(const K of ['U','F','H','S']){o[K+'2']??=180-o[K];if(o[K+'l']!=null)o[K+'2l']??=o[K+'l']}o.O??=0;o.O2??=180;o.Ol=o.O2l=.4}
