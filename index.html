@@ -2,7 +2,7 @@
 <title>LiftLog</title>
 <meta name="theme-color" content="#0f0f12">
 <style>
-:root{--bg:#0f0f12;--card:#1a1a20;--card2:#26262f;--line:#2e2e38;--text:#f2f2f5;--sub:#9a9aa8;--accent:#ff5a1f;--accent-soft:rgba(255,90,31,.25);--ok:#22c55e;--ok-soft:rgba(34,197,94,.12);--danger:#ff4d5e;--gold:#facc15;--shade:rgba(0,0,0,.6);--white:#fff;color-scheme:dark}
+:root{--bg:#0f0f12;--card:#1a1a20;--card2:#26262f;--line:#2e2e38;--text:#f2f2f5;--sub:#9a9aa8;--accent:#ff5a1f;--accent-soft:rgba(255,90,31,.25);--ok:#22c55e;--ok-soft:rgba(34,197,94,.12);--danger:#ff4d5e;--gold:#facc15;--shade:rgba(0,0,0,.6);--white:#fff;--hot:#ff2d3d;--hot-soft:rgba(255,45,61,.4);--skin:#c9ccd4;--skin2:#8e919c;--mus:#aeb2bd;--mus2:#7b7e89;--hair:#3b3b45;--plate:#22222a;--prop:#33333d;--mm:#3a3a46;color-scheme:dark}
 *{box-sizing:border-box;margin:0;padding:0}
 [hidden]{display:none!important}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;font-size:15px;-webkit-tap-highlight-color:transparent}
@@ -113,6 +113,33 @@ ul{padding-left:18px;margin-top:6px;font-size:14px;line-height:1.7}
 .pri{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--card2);color:var(--sub)}
 .pri.hi{background:var(--accent);color:var(--white)}
 .note{font-size:13px;color:var(--sub);margin-top:4px;line-height:1.6}
+.lir{display:flex;align-items:center;border-bottom:1px solid var(--line)}
+.lir .li{border-bottom:0;flex:1;min-width:0}
+.ibox{max-width:420px;max-height:92vh;overflow:auto}
+.av{display:block;width:100%;height:210px;background:var(--card2);border-radius:12px;margin-top:10px}
+.av .bd{fill:var(--skin);stroke:var(--card2);stroke-width:.7}
+.av .bd.far{fill:var(--skin2)}
+.av .mu{fill:var(--mus)}
+.av .mu.far{fill:var(--mus2)}
+.av .hot{fill:var(--hot)}
+.av .m2{fill:var(--hot-soft)}
+.av .hair{fill:var(--hair)}
+.av .gr{stroke:var(--line);stroke-width:2}
+.av .pr,.av .pr line{fill:var(--prop);stroke:var(--prop)}
+.av .pf{stroke:var(--sub);stroke-linecap:round}
+.av .ld{fill:var(--plate);stroke:var(--sub);stroke-width:1.5}
+.av .ldc{fill:var(--sub)}
+.av .cb{stroke:var(--sub);stroke-width:1.2;stroke-dasharray:3 3}
+.mmap{display:flex;justify-content:center;gap:20px;margin-top:10px;text-align:center}
+.mmap svg{display:block;height:170px;width:auto}
+.mmap svg>*,.mmap g>*{fill:var(--mm)}
+.mmap .hot{fill:var(--hot)}
+.mmap .m2{fill:var(--hot-soft)}
+.mleg{display:flex;flex-direction:column;gap:4px;margin-top:10px;font-size:13px}
+.mleg .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;background:var(--hot)}
+.mleg .dot.m2{background:var(--hot-soft)}
+.hot{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.55}}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </style>
 <header><h1 id="title">LiftLog</h1></header>
@@ -584,7 +611,7 @@ function renderPick(){
  $('#pchips').innerHTML=['すべて',...PARTS].map(p=>`<button class="chip ${p===pick.part?'on':''}" data-a="pPart" data-p="${p}">${p}</button>`).join('');
  $('#peq').innerHTML='<span class="sub" style="align-self:center">器具</span>'+['すべて',...EQS].map(q=>`<button class="chip ${q===pick.eq?'on':''}" data-a="pEq" data-q="${q}">${q}</button>`).join('');
  const q=pick.q.toLowerCase(),l=S.exercises.filter(e=>(pick.part==='すべて'||e.part===pick.part)&&(pick.eq==='すべて'||eqOf(e)===pick.eq)&&e.name.toLowerCase().includes(q)).sort((a,b)=>PARTS.indexOf(a.part)-PARTS.indexOf(b.part));
- $('#plist').innerHTML=l.map(e=>`<button class="li ${pick.sel.includes(e.id)?'on':''}" data-a="pTog" data-id="${e.id}"><span>${esc(e.name)}</span><span class="tag">${e.part}・${eqOf(e)}</span></button>`).join('')||'<div class="empty">該当なし</div>';
+ $('#plist').innerHTML=l.map(e=>`<div class="lir"><button class="li ${pick.sel.includes(e.id)?'on':''}" data-a="pTog" data-id="${e.id}"><span>${esc(e.name)}</span><span class="tag">${e.part}・${eqOf(e)}</span></button><button class="icon" data-a="exInfo" data-id="${e.id}" aria-label="動きと対象筋">ⓘ</button></div>`).join('')||'<div class="empty">該当なし</div>';
  $('#pgo').textContent=pick.sel.length?`設定完了（${pick.sel.length}）`:'設定完了';
  $('#pgo').disabled=!pick.sel.length;
 }
@@ -598,6 +625,182 @@ function askNewEx(part,eq){
   $('#dlgYes').onclick=()=>{const name=$('#nxName').value.trim();if(!name)return toast('種目名を入力してください');done({name,part:$('#nxPart').value,eq:$('#nxEq').value})};
   $('#nxName').focus();
  });
+}
+
+const MUS={ch:'大胸筋',df:'三角筋（前部）',ds:'三角筋（中部）',dr:'三角筋（後部）',bi:'上腕二頭筋',tr:'上腕三頭筋',fa:'前腕',ab:'腹直筋',ob:'腹斜筋',tp:'僧帽筋',la:'広背筋',lb:'脊柱起立筋',gl:'大臀筋',gm:'中臀筋',q:'大腿四頭筋',hm:'ハムストリングス',ad:'内転筋',ca:'ふくらはぎ'};
+const EXM={
+ 'ベンチプレス':'bench|ch|df tr','インクラインベンチプレス':'ibench|ch|df tr','ダンベルプレス':'bench|ch|df tr','インクラインダンベルプレス':'ibench|ch|df tr','ダンベルフライ':'fly|ch|df','チェストプレス':'cpress|ch|df tr','ケーブルクロスオーバー':'fly|ch|df','ディップス':'dip|ch tr|df','腕立て伏せ':'pushup|ch|df tr ab',
+ 'デッドリフト':'deadlift|lb gl hm|la tp q fa','懸垂':'pullup|la|bi dr fa','ラットプルダウン':'pulldown|la|bi dr','ベントオーバーロウ':'rowb|la tp|dr bi lb','シーテッドロウ':'rows|la tp|dr bi','ワンハンドダンベルロウ':'rowb|la|dr bi','Tバーロウ':'rowb|la tp|dr bi lb','バックエクステンション':'backext|lb|gl hm',
+ 'スクワット':'squat|q gl|hm ad lb','レッグプレス':'legpress|q gl|hm ad','ブルガリアンスクワット':'lunge|q gl|hm ad','ルーマニアンデッドリフト':'rdl|hm gl|lb','ランジ':'lunge|q gl|hm ad','レッグエクステンション':'legext|q|','レッグカール':'legcurl|hm|ca','カーフレイズ':'calf|ca|','ヒップスラスト':'hipthrust|gl|hm q',
+ 'ショルダープレス':'ohpress|df ds|tr tp','ダンベルショルダープレス':'ohpress|df ds|tr tp','サイドレイズ':'lateral|ds|tp','フロントレイズ':'fraise|df|ch','リアレイズ':'fly|dr|tp','フェイスプル':'rows|dr|tp','アップライトロウ':'upright|ds tp|df bi',
+ 'バーベルカール':'curl|bi|fa','ダンベルカール':'curl|bi|fa','ハンマーカール':'curl|bi fa|','プリーチャーカール':'curl|bi|fa','トライセプスプッシュダウン':'pushdown|tr|','フレンチプレス':'ohext|tr|','ナローベンチプレス':'bench|tr ch|df',
+ 'クランチ':'crunch|ab|ob','レッグレイズ':'legraise|ab|ob','プランク':'plank|ab|ob lb','アブローラー':'abroller|ab|la ob','ケーブルクランチ':'crunch|ab|ob',
+ 'ランニング':'run|q hm ca|gl','ウォーキング':'walk|q hm ca|gl','バイク':'bike|q|hm ca gl','ローイング':'erg|la q|hm bi lb',
+ 'ペックフライ（バタフライ）':'fly|ch|df','インクラインチェストプレス':'cpress|ch|df tr','デクラインチェストプレス':'cpress|ch|tr','アイソラテラル・チェストプレス':'cpress|ch|df tr','スミスマシン・ベンチプレス':'bench|ch|df tr','スミスマシン・インクラインベンチプレス':'ibench|ch|df tr','ケーブルフライ（ロー→ハイ）':'fly|ch|df','アシストディップス':'dip|ch tr|df',
+ 'アシスト懸垂（チンニングマシン）':'pullup|la|bi dr','マシンロウ':'rows|la tp|dr bi','アイソラテラル・ロウ':'rows|la tp|dr bi','アイソラテラル・ラットプルダウン':'pulldown|la|bi dr','プルオーバーマシン':'spull|la|ch tr','ストレートアームプルダウン':'spull|la|tr','ワンハンドケーブルロウ':'rows|la|dr bi','スミスマシン・ベントオーバーロウ':'rowb|la tp|dr bi lb','ロワーバックマシン':'backext|lb|gl',
+ 'ハックスクワット':'squat|q gl|ad','45度レッグプレス':'legpress|q gl|hm ad','ペンデュラムスクワット':'squat|q gl|ad','Vスクワット':'squat|q gl|ad','スミスマシン・スクワット':'squat|q gl|hm ad','シーテッドレッグカール':'legext|hm|ca','ライイングレッグカール':'legcurl|hm|ca','アダクション（内もも）':'adduct|ad|','アブダクション（外もも）':'adduct|gm|gl','グルートマシン':'kickback|gl|hm','ケーブルキックバック':'kickback|gl|hm','シーテッドカーフレイズ':'calf|ca|','スタンディングカーフレイズマシン':'calf|ca|',
+ 'マシンショルダープレス':'ohpress|df ds|tr','スミスマシン・ショルダープレス':'ohpress|df ds|tr tp','ラテラルレイズマシン':'lateral|ds|','ケーブルサイドレイズ':'lateral|ds|tp','リアデルトマシン（リバースペックフライ）':'fly|dr|tp','ケーブルリアレイズ':'fly|dr|tp','ケーブルフロントレイズ':'fraise|df|','スミスマシン・シュラッグ':'shrug|tp|fa',
+ 'アームカールマシン':'curl|bi|fa','ケーブルカール':'curl|bi|fa','ケーブルハンマーカール（ロープ）':'curl|bi fa|','トライセプスエクステンションマシン':'pushdown|tr|','ロープ・プッシュダウン':'pushdown|tr|','ケーブル・オーバーヘッドエクステンション':'ohext|tr|','ケーブル・トライセプスキックバック':'trikick|tr|',
+ 'アブドミナルクランチマシン':'crunch|ab|ob','ロータリートルソー（腹斜筋）':'chop|ob|ab','ケーブルウッドチョップ':'chop|ob|ab df','ハンギングレッグレイズ（パワータワー）':'hlr|ab|ob',
+ 'クロストレーナー':'walk|q hm gl|ca df','ステアクライマー':'walk|gl q|hm ca','リカンベントバイク':'bike|q|hm gl','スキーエルゴ':'skierg|la tr|ab df'
+};
+const PART_M={胸:'bench|ch|df tr',背中:'rows|la|bi',脚:'squat|q gl|hm',肩:'ohpress|ds|df',腕:'curl|bi|tr',腹:'crunch|ab|ob',有酸素:'run|q hm ca|gl'};
+const SEAT='<rect x="78" y="130" width="34" height="6" rx="3"/><rect x="92" y="136" width="5" height="14"/>',SEATB=SEAT+'<rect x="82" y="76" width="6" height="54" rx="3"/>',FSEAT='<rect x="80" y="119" width="40" height="6" rx="3"/><rect x="97" y="125" width="6" height="25"/>';
+const MOVES={
+ bench:{r:'p',at:[110,118],c:{T:180,H:10,S:95,F:-90},a:{U:25},b:{U:-80},pr:'<rect x="50" y="125" width="76" height="6" rx="3"/><rect x="58" y="131" width="5" height="19"/><rect x="114" y="131" width="5" height="19"/>'},
+ ibench:{r:'p',at:[110,118],c:{T:-150,H:10,S:95,F:-70},a:{U:45},b:{U:-70},pr:'<line x1="116" y1="126" x2="72" y2="101" stroke-width="7" stroke-linecap="round"/><rect x="106" y="126" width="5" height="24"/>'},
+ cpress:{r:'p',at:[95,123],c:{H:0,F:-3},a:{U:180,Ul:.6},b:{U:0},lin:['U'],pr:SEATB},
+ fly:{v:'f',r:'p',at:[100,112],c:{H:90,Hl:.3},a:{U:-3,F:5},b:{U:0,Ul:.35,F:180},lin:['U','F'],pr:FSEAT,cb:[196,40]},
+ dip:{r:'w',at:[110,72],c:{H:110,S:135},a:{T:-70,U:160,F:80},b:{T:-85},pr:'<line x1="92" y1="75" x2="140" y2="75" stroke-width="4"/><rect x="132" y="75" width="4" height="75"/>'},
+ pushup:{r:'w',at:[130,147],c:{O:80},a:{T:-5,U:150,F:8,H:175,S:175},b:{T:-20,H:160,S:160}},
+ plank:{r:'w',at:[150,147],c:{F:0,O:80},a:{T:-8,H:172,S:172},b:{T:-11,H:169,S:169}},
+ pulldown:{r:'p',at:[95,123],c:{T:-95,H:0},a:{U:-85,F:-90},b:{U:105,F:-75},lin:['U'],pr:SEAT,cb:[100,0],ca:1},
+ pullup:{r:'w',at:[110,22],c:{H:110,S:150,F:-90},a:{T:-95,U:-90},b:{T:-100,U:73},lin:['U'],pr:'<line x1="70" y1="22" x2="150" y2="22" stroke-width="4"/>'},
+ hlr:{r:'w',at:[100,10],c:{U:-90,F:-90},a:{H:100,S:100},b:{H:0,S:10},pr:'<line x1="60" y1="10" x2="140" y2="10" stroke-width="4"/>'},
+ rowb:{r:'a',at:[115,150],c:{T:-35,H:70,S:100},a:{},b:{U:150,F:95}},
+ rows:{r:'p',at:[95,123],c:{H:-5,S:10},a:{T:-80,U:0,F:0},b:{T:-95,U:120,F:-5},pr:SEAT+'<rect x="152" y="112" width="5" height="24" rx="2"/>',cb:[200,92],ca:1},
+ spull:{r:'a',at:[105,150],c:{T:-75,H:85,S:95},a:{U:-55,F:-55},b:{U:100,F:100},cb:[140,0],ca:1},
+ deadlift:{r:'a',at:[115,150],a:{T:-40,H:20,S:110,U:92,F:92},b:{}},
+ rdl:{r:'a',at:[115,150],a:{T:-15,H:70,S:100},b:{H:88,S:95}},
+ backext:{r:'a',at:[55,128],c:{H:155,S:155},a:{T:50,U:200,F:50},b:{T:-25,U:125,F:-25},pr:'<rect x="92" y="111" width="22" height="6" rx="3"/><rect x="100" y="117" width="5" height="33"/><rect x="40" y="134" width="16" height="5" rx="2"/>'},
+ squat:{r:'a',at:[110,150],c:{U:150,F:-45},a:{T:-50,H:10,S:115},b:{}},
+ legpress:{r:'p',at:[70,120],c:{T:-150,U:60,F:0,O:-130},a:{H:-80,S:10},b:{H:-40,S:-40},pl:1,pr:'<line x1="76" y1="128" x2="34" y2="106" stroke-width="7" stroke-linecap="round"/><rect x="60" y="128" width="5" height="22"/>'},
+ lunge:{r:'a',at:[125,150],c:{O:0},a:{H:5,S:90,H2:95,S2:185,O2:40},b:{H:70,S:95,H2:110,S2:120,O2:30}},
+ legext:{r:'p',at:[95,123],c:{T:-95,H:0,U:80,F:10},a:{S:90},b:{S:-5},pr:SEATB},
+ legcurl:{r:'p',at:[95,118],c:{T:0,H:180,U:30,F:60},a:{S:180},b:{S:280},pr:'<rect x="60" y="125" width="92" height="6" rx="3"/><rect x="70" y="131" width="5" height="19"/><rect x="140" y="131" width="5" height="19"/>'},
+ calf:{r:'t',at:[124,142],a:{O:-15},b:{O:40},pr:'<rect x="116" y="142" width="26" height="8"/>'},
+ hipthrust:{r:'a',at:[140,150],a:{T:-158,H:-35,S:80,U:22,F:22},b:{T:-180,H:0,S:90,U:0,F:0},lp:1,pr:'<rect x="44" y="129" width="40" height="7" rx="3"/><rect x="60" y="136" width="5" height="14"/>'},
+ kickback:{r:'a',at:[120,150],c:{T:-50,U:40,F:40},a:{H2:95,S2:100},b:{H2:150,S2:110},pr:'<rect x="180" y="60" width="5" height="90"/>'},
+ ohpress:{r:'p',at:[95,123],c:{H:0,F:-90},a:{U:77},b:{U:-88},lin:['U'],pr:SEATB},
+ fraise:{r:'a',at:[105,150],a:{U:85,F:85},b:{U:-5,F:-5},cb:[122,150]},
+ upright:{r:'a',at:[105,150],a:{},b:{U:-30,Ul:.2,F:80},lin:['U']},
+ shrug:{r:'a',at:[105,150],a:{},b:{Tl:1.1}},
+ curl:{r:'a',at:[105,150],c:{U:95},a:{F:88},b:{F:-75},cb:[128,150]},
+ pushdown:{r:'a',at:[100,150],c:{T:-80,U:95},a:{F:-55},b:{F:92},cb:[125,0],ca:1},
+ ohext:{r:'a',at:[100,150],c:{U:-98},a:{F:110},b:{F:270},cb:[60,150]},
+ trikick:{r:'a',at:[115,150],c:{T:-20,H:70,S:100,U:170},a:{F:90},b:{F:175},cb:[190,120]},
+ crunch:{r:'p',at:[100,143],c:{H:-50,S:50,O:0},a:{T:180,U:-30,F:-180},b:{T:210,U:0,F:-150}},
+ legraise:{r:'p',at:[100,143],c:{T:180,U:0,F:0},a:{H:-5,S:-5},b:{H:-85,S:-90}},
+ abroller:{r:'k',at:[80,146],c:{S:180,O:160},a:{H:95,T:-30},b:{H:130,T:-8,U:35,F:35},ld:'roll'},
+ run:{r:'p',at:[100,96],c:{T:-80},a:{H:55,S:100,U:125,F:60,H2:125,S2:165,U2:55,F2:-30},b:{H:125,S:165,U:55,F:-30,H2:55,S2:100,U2:125,F2:60},ld:'',cyc:900},
+ walk:{r:'p',at:[100,96],c:{T:-88},a:{H:70,S:95,U:105,F:95,H2:110,S2:120,U2:75,F2:60},b:{H:110,S:120,U:75,F:60,H2:70,S2:95,U2:105,F2:95},ld:'',cyc:1400},
+ bike:{r:'p',at:[95,95],c:{T:-55,U:30,F:10},a:{H:15,S:100,H2:60,S2:95},b:{H:60,S:95,H2:15,S2:100},ld:'',cyc:1000,pr:'<line x1="95" y1="100" x2="112" y2="137" stroke-width="4"/><line x1="112" y1="137" x2="152" y2="80" stroke-width="4"/><rect x="85" y="97" width="20" height="5" rx="2"/><circle cx="112" cy="137" r="8" fill="none" stroke-width="3"/><line x1="112" y1="137" x2="112" y2="150" stroke-width="4"/>'},
+ erg:{r:'a',at:[150,140],a:{T:-55,H:-45,S:65,U:5,F:5},b:{T:-110,H:-5,S:5,U:125,F:-10},pr:'<line x1="70" y1="147" x2="165" y2="147" stroke-width="4"/><rect x="156" y="125" width="5" height="22"/>',cb:[175,130],ca:1},
+ skierg:{r:'a',at:[105,150],a:{U:-70,F:-75},b:{T:-40,H:60,S:105,U:100,F:100},cb:[130,0],ca:1},
+ lateral:{v:'f',r:'p',at:[100,95],c:{H:88},a:{U:80,F:83},b:{U:-5,F:-3},cb:[60,150]},
+ adduct:{v:'f',r:'p',at:[100,112],c:{U:80},a:{H:35,Hl:.6},b:{H:90,Hl:.3},lin:['H'],pr:FSEAT},
+ chop:{v:'f',r:'p',at:[100,95],c:{H:85,S:92},a:{T:-82,U:-20,F:-128,U2:-28,F2:-28},b:{T:-98,U:124,F:124,U2:110,F2:55},lin:['U','F','U2','F2'],cb:[196,10],c1:1}
+};
+const LEN={T:40,U:22,F:20,H:28,S:27,O:9};
+for(const m of Object.values(MOVES))for(const P of ['a','b']){
+ const o=m[P]={T:-90,U:90,F:90,H:90,S:90,...m.c,...m[P]};
+ if(m.v==='f'){for(const K of ['U','F','H','S']){o[K+'2']??=180-o[K];if(o[K+'l']!=null)o[K+'2l']??=o[K+'l']}o.O??=0;o.O2??=180;o.Ol=o.O2l=.4}
+ else{o.O??=o.S-90;if(o.S2!=null)o.O2??=o.S2-90;for(const K of ['U','F','H','S','O'])o[K+'2']??=o[K]}
+}
+const dir=(a,l)=>[Math.cos(a*Math.PI/180)*l,Math.sin(a*Math.PI/180)*l];
+function mvPose(mv,k){
+ const A=mv.a,B=mv.b,V=K=>{
+  const L=LEN[K[0]],sa=A[K+'l']??1,sb=B[K+'l']??1;
+  if(mv.lin&&mv.lin.includes(K)){const p=dir(A[K],L*sa),q=dir(B[K],L*sb);return[p[0]+(q[0]-p[0])*k,p[1]+(q[1]-p[1])*k]}
+  return dir(A[K]+(B[K]-A[K])*k,L*(sa+(sb-sa)*k));
+ },ad=(a,b,m=1)=>[a[0]+b[0]*m,a[1]+b[1]*m],tv=V('T'),tl=Math.hypot(tv[0],tv[1]),tu=[tv[0]/tl,tv[1]/tl],J={p:[0,0]};
+ if(mv.v==='f'){const pp=[-tu[1],tu[0]];J.sc=tv;J.h=ad(J.sc,tu,12);J.s=ad(J.sc,pp,13);J.s2=ad(J.sc,pp,-13);J.q=ad(J.p,pp,8);J.q2=ad(J.p,pp,-8)}
+ else{J.s=J.s2=tv;J.h=ad(J.s,tu,12);J.q=J.q2=J.p}
+ J.e=ad(J.s,V('U'));J.w=ad(J.e,V('F'));J.e2=ad(J.s2,V('U2'));J.w2=ad(J.e2,V('F2'));
+ J.k=ad(J.q,V('H'));J.a=ad(J.k,V('S'));J.t=ad(J.a,V('O'));J.k2=ad(J.q2,V('H2'));J.a2=ad(J.k2,V('S2'));J.t2=ad(J.a2,V('O2'));
+ const r=J[mv.r],o=[mv.at[0]-r[0],mv.at[1]-r[1]];
+ for(const j in J)J[j]=ad(J[j],o);
+ return J;
+}
+const SH={
+ tor:{b:[[-.22,0],[-.14,-9],[.12,-7.5],[.45,-6.5],[.8,-8.2],[1.03,-6.5],[1.13,-1],[1.08,4.5],[.88,10.5],[.62,9],[.35,8],[.1,7.5],[-.12,6.5]],
+  m:[['ob',[[.55,-1],[.55,5],[.15,6],[.1,0]]],['ab',[[.58,2],[.58,8],[.35,8.5],[.1,7],[.08,2]]],['ch',[[.95,1],[.98,7],[.8,11],[.6,8.5],[.62,2]]],['la',[[.85,-2],[.85,-8.5],[.6,-7.5],[.4,-6],[.45,-1]]],['lb',[[.45,-1],[.4,-6.5],[.1,-7.5],[.05,-1]]],['tp',[[1.1,-1],[1,-6.5],[.85,-7],[.82,-1]]],['gl',[[.05,-1],[.08,-8],[-.1,-10],[-.2,-5],[-.18,-1]]],['gm',[[.12,-2],[.1,2],[-.02,3],[-.05,-3]]]]},
+ nk:{b:[[0,-3.5],[.8,-3],[.8,3],[0,4]],m:[]},
+ ua:{b:[[-.15,0],[-.1,5.5],[.3,6],[.7,4.5],[1.05,3.5],[1.12,0],[1.05,-3.5],[.6,-5.5],[.2,-5.5],[-.1,-5]],
+  m:[['ds',[[-.2,-2.5],[-.2,2.5],[.3,3],[.4,0],[.3,-3]]],['df',[[-.15,-1],[-.1,-6],[.3,-6.5],[.45,-2]]],['dr',[[-.15,1],[-.1,6],[.3,6.5],[.45,2]]],['bi',[[.35,-1],[.4,-5.8],[.7,-5],[.95,-2.5],[.9,-.5]]],['tr',[[.3,1],[.35,6],[.7,5],[.95,2.5],[.9,.5]]]]},
+ fa:{b:[[-.08,0],[-.05,4],[.3,4.5],[.8,3],[1.05,2.5],[1.1,0],[1.05,-2.5],[.6,-3.5],[.2,-4.2],[-.05,-3.8]],m:[['fa',[[.05,-3],[.05,3.5],[.4,4],[.7,2],[.7,-2.5],[.35,-3.8]]]]},
+ th:{b:[[-.1,0],[-.05,7.5],[.4,8],[.8,5.5],[1.05,4.5],[1.12,0],[1.05,-4.5],[.75,-7],[.35,-9],[0,-8]],
+  m:[['ad',[[.05,-1],[.05,2],[.4,2],[.45,-2]]],['q',[[.1,-1],[.1,-7.5],[.4,-8.8],[.75,-6.5],[.95,-3.5],[.9,-1]]],['hm',[[.15,1],[.2,7.2],[.55,7.3],[.85,4.5],[.85,1]]]]},
+ sh:{b:[[-.08,0],[-.02,4.5],[.3,6],[.7,3.5],[1.03,2.5],[1.08,0],[1.03,-2.5],[.6,-3.2],[.15,-4],[-.04,-3.8]],m:[['ca',[[.08,1],[.12,5],[.35,6],[.65,3],[.6,1]]]]},
+ ft:{b:[[-.3,0],[-.2,3],[.6,3],[1.1,2],[1.15,0],[.9,-1.5],[.1,-2.5],[-.25,-2]],m:[]}
+};
+const FSH={
+ tor:{b:[[-.15,0],[-.12,10],[.15,9],[.45,9.5],[.75,13],[.95,16],[1.06,12],[1.1,0],[1.06,-12],[.95,-16],[.75,-13],[.45,-9.5],[.15,-9],[-.12,-10]],
+  m:[['ob',[[.6,5],[.6,9.5],[.25,9],[.15,5]]],['ab',[[.62,-4],[.62,4],[.1,4],[.1,-4]]],['ch',[[.95,1],[.95,12],[.75,12],[.68,6],[.7,1]]],['la',[[.8,10],[.85,14],[.55,10.5],[.6,9]]],['tp',[[1.08,4],[1.02,11],[.95,8],[1,3]]],['gm',[[.05,8.5],[.1,11],[-.12,10],[-.1,8]]]]},
+ nk:{m:[]},
+ ua:{m:[['df',[[-.15,-1],[-.1,4],[.35,3.5],[.35,-1.5]]],['ds',[[-.2,-1],[-.15,-6],[.35,-5.5],[.4,-1.5]]],['bi',[[.35,-3],[.35,3],[.65,3.8],[.92,2],[.92,-2],[.65,-3.8]]],['tr',[[.3,3.6],[.35,5.4],[.8,4],[.8,2.8]]]]},
+ fa:{m:[['fa',[[.05,-3.5],[.05,3.5],[.4,4],[.75,2],[.75,-2],[.4,-4]]]]},
+ th:{m:[['q',[[.08,-7],[.08,3],[.45,5],[.92,3],[.92,-3.5],[.45,-8]]],['ad',[[.05,3.5],[.05,7.5],[.45,5],[.5,3]]]]},
+ sh:{m:[['ca',[[.1,-4.3],[.15,-5.5],[.5,-4.5],[.45,-3]]],['ca',[[.1,3.5],[.15,5],[.5,4],[.45,2.5]]]]}
+};
+const HAIR={s:[[1.05,-7.6],[1.45,-6.4],[1.66,-1],[1.6,3],[1.42,1.5],[1.3,-2.5],[1.08,-5]],f:[[1.3,-6.5],[1.6,-4],[1.66,0],[1.6,4],[1.3,6.5],[1.42,0]]};
+const GLOW=(id,w,h)=>`<defs><filter id="${id}" filterUnits="userSpaceOnUse" x="0" y="0" width="${w}" height="${h}"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+function loadOf(e){const q=eqOf(e);return q==='自重'?'':q==='マシン'?'m':/ダンベル|ハンマー|レイズ|ブルガリアン|ランジ|フレンチ/.test(e.name)?'db':'bb'}
+function exMeta(e){const k=EXM[e.name]||PART_M[e.part]||PART_M.胸,[m,p,s]=k.split('|');return{m,p:p.split(' '),s:s?s.split(' '):[],own:!EXM[e.name]}}
+const fx=v=>v.toFixed(1);
+function blob(P){const n=P.length,m=i=>{const a=P[i%n],b=P[(i+1)%n];return fx((a[0]+b[0])/2)+' '+fx((a[1]+b[1])/2)};let d='M'+m(0);for(let i=1;i<=n;i++)d+='Q'+fx(P[i%n][0])+' '+fx(P[i%n][1])+' '+m(i);return d+'Z'}
+function loc(A,B,fl){const dx=B[0]-A[0],dy=B[1]-A[1],l=Math.hypot(dx,dy),nx=l<.01?1:-dy/l,ny=l<.01?0:dx/l;return([t,d])=>[A[0]+dx*t+nx*d*fl,A[1]+dy*t+ny*d*fl]}
+function avBuild(svg,mv,hot,sec,ld,cab){
+ const f=mv.v==='f',it=[],NS='http://www.w3.org/2000/svg';
+ svg.innerHTML=GLOW('glw',200,160)+`<line class="gr" x1="0" y1="150" x2="200" y2="150"/><g class="pr">${mv.pr||''}</g>`;
+ const add=(tag,cls,fn,r)=>{const el=document.createElementNS(NS,tag);el.setAttribute('class',cls);if(r)el.setAttribute('r',r);if(/hot/.test(cls))el.setAttribute('filter','url(#glw)');svg.appendChild(el);it.push([el,fn])};
+ const mc=m=>hot.has(m)?'hot':sec.has(m)?'m2':'mu';
+ const seg=(k,A,B,far,fl=1)=>{
+  const F=far?' far':'',b=(f&&FSH[k].b)||SH[k].b,ms=f?FSH[k].m:SH[k].m;
+  add('path','bd'+F,J=>({d:blob(b.map(loc(J[A],J[B],fl)))}));
+  ms.forEach(([m,p])=>{
+   add('path',mc(m)+F,J=>({d:blob(p.map(loc(J[A],J[B],fl)))}));
+   if(f&&k==='tor'&&m!=='ab')add('path',mc(m),J=>({d:blob(p.map(loc(J[A],J[B],-1)))}));
+  });
+ };
+ const dot=(j,cls,r)=>add('circle',cls,J=>({cx:fx(J[j][0]),cy:fx(J[j][1])}),r);
+ const line=(fn,cls)=>add('line',cls,J=>{const [p,q]=fn(J);return{x1:fx(p[0]),y1:fx(p[1]),x2:fx(q[0]),y2:fx(q[1])}});
+ if(cab){line(J=>[J.w,mv.cb],'cb');if(f&&!mv.c1)line(J=>[J.w2,[200-mv.cb[0],mv.cb[1]]],'cb')}
+ if(mv.pl)line(J=>{const o=dir(-40,5),u=dir(50,15),m=[(J.a[0]+J.t[0])/2+o[0],(J.a[1]+J.t[1])/2+o[1]];return[[m[0]+u[0],m[1]+u[1]],[m[0]-u[0],m[1]-u[1]]]},'pf');
+ const head=()=>{seg('nk',f?'sc':'s','h');dot('h','bd',7.5);add('path','hair',J=>({d:blob(HAIR[f?'f':'s'].map(loc(J[f?'sc':'s'],J.h,1)))}))};
+ if(f){
+  for(const [q,k,a,t,fl] of [['q','k','a','t',1],['q2','k2','a2','t2',-1]]){seg('th',q,k,0,fl);seg('sh',k,a,0,fl);dot(t,'bd',3.5)}
+  seg('tor','p','sc');head();
+  for(const [s,e,w,fl] of [['s','e','w',1],['s2','e2','w2',-1]]){seg('ua',s,e,0,fl);seg('fa',e,w,0,fl);dot(w,'bd',3.3)}
+ }else{
+  seg('ua','s2','e2',1);seg('fa','e2','w2',1);dot('w2','bd far',3.3);
+  seg('th','p','k2',1);seg('sh','k2','a2',1);seg('ft','a2','t2',1);
+  seg('tor','p','s');head();
+  seg('th','p','k');seg('sh','k','a');seg('ft','a','t');
+  seg('ua','s','e');seg('fa','e','w');dot('w','bd',3.3);
+ }
+ const hands=f?['w','w2']:['w'];
+ if(mv.lp&&ld)add('circle','ld',J=>({cx:fx(J.p[0]),cy:fx(J.p[1]-10)}),11);
+ else if(ld==='bb'&&!f){dot('w','ld',11);dot('w','ldc',2.2)}
+ else if(ld==='bb'||ld==='db')hands.forEach(j=>dot(j,'ld',5.5));
+ else if(ld==='m')hands.forEach(j=>dot(j,'ldc',2.6));
+ else if(ld==='roll')dot('w','ld',7);
+ return it;
+}
+function avDraw(it,mv,k){const J=mvPose(mv,k);for(const [el,fn] of it){const a=fn(J);for(const n in a)el.setAttribute(n,a[n])}}
+const MMF=[['df','M57 34Q63 31 68 34L65 47Q60 42 57 39Z'],['ds','M68 34Q74 37 74 45L71 52L65 47Z'],['ch','M51 35L57 34L57 39Q60 42 65 47L63 54Q57 59 51 57Z'],['bi','M65 50L71 53Q75 60 73 70L70 75Q66 70 65 62Z'],['fa','M70 77L74 75Q78 88 77 100L73 101Q70 90 69 81Z'],['ab','M51 60L57 59Q58 79 57 99L51 101Z'],['ob','M58 58L64 56Q66 76 62 95L58 99Q59 79 58 58Z'],['q','M53 105L63 98Q68 116 65 146L57 151Q54 130 53 105Z'],['ad','M51 104L52.5 105Q54 126 56 141L52 134Q51 119 51 104Z'],['ca','M56 158L64 156Q66 170 62 187L58 187Q55 172 56 158Z']];
+const MMB=[['tp','M50 25L55 26Q58 32 66 35L58 40Q54 50 50 63Z'],['dr','M58 36Q63 32 68 34L66 47Q61 43 58 40Z'],['ds','M68 34Q74 37 74 45L71 52L65 47Z'],['tr','M65 50L71 53Q75 60 73 70L70 75Q66 70 65 62Z'],['fa','M70 77L74 75Q78 88 77 100L73 101Q70 90 69 81Z'],['la','M53 62Q57 49 62 44L66 49Q65 66 59 82L54 86Z'],['lb','M50.5 64L52.5 63L53.5 87L57 99L50.5 101Z'],['gm','M59 95L64 96Q67 101 66 107L61 103Z'],['gl','M51 101L58 97L61 103L66 107Q66 117 60 123Q55 125 51 123Z'],['hm','M52 126L65 119Q68 133 64 148L57 151Q53 139 52 126Z'],['ca','M55 156Q60 151 65 156Q67 170 62 187L58 187Q53 172 55 156Z']];
+const MMN='<ellipse cx="75" cy="107" rx="3.5" ry="5.5"/><ellipse cx="60" cy="193" rx="5" ry="3"/>';
+function mmSvg(ps,M,defs){
+ const g=ps.map(([m,d])=>M.p.includes(m)?`<path class="hot" filter="url(#glm)" d="${d}"/>`:`<path class="${M.s.includes(m)?'m2':''}" d="${d}"/>`).join('')+MMN;
+ return `<svg viewBox="0 0 100 200">${defs?GLOW('glm',100,200):''}<circle cx="50" cy="15" r="10"/><rect x="46" y="23" width="8" height="11"/>${g}<g transform="matrix(-1 0 0 1 100 0)">${g}</g></svg>`;
+}
+function phase(mv,ms){if(mv.cyc)return .5-.5*Math.cos(ms/mv.cyc*2*Math.PI);const p=ms/3000%1,e=x=>.5-.5*Math.cos(Math.PI*x);return p<.12?0:p<.5?e((p-.12)/.38):p<.62?1:1-e((p-.62)/.38)}
+let exRaf=0;
+function openExInfo(id){
+ const e=S.exercises.find(x=>x.id===id);if(!e)return;
+ const M=exMeta(e),mv=MOVES[M.m],ld=mv.ld??loadOf(e),cab=ld==='m'&&mv.cb&&(mv.ca||/ケーブル|ロープ|クロスオーバー|フェイスプル/.test(e.name)),on=pick&&pick.sel.includes(id),nm=a=>a.map(m=>MUS[m]).join('・'),d=$('#dlg');
+ d.innerHTML=`<div class="dbox ibox"><div class="row between"><b>${esc(e.name)}</b><button class="icon" id="exiX">✕</button></div><div class="sub">${esc(e.part)}・${eqOf(e)}</div>
+ <svg class="av" viewBox="0 0 200 160"></svg>
+ <div class="mmap"><div>${mmSvg(MMF,M,1)}<span class="sub">前</span></div><div>${mmSvg(MMB,M)}<span class="sub">後ろ</span></div></div>
+ <div class="mleg"><div><i class="dot hot"></i>メイン：${nm(M.p)}</div>${M.s.length?`<div><i class="dot m2"></i>サブ：${nm(M.s)}</div>`:''}${M.own?'<div class="sub">オリジナル種目は部位の代表的な動きで表示しています</div>':''}</div>
+ <div class="row mt"><button class="btn grow" id="exiNo">閉じる</button>${pick?`<button class="btn grow p" id="exiSel">${on?'選択を外す':'選択する'}</button>`:''}</div></div>`;
+ d.hidden=false;
+ const it=avBuild(d.querySelector('.av'),mv,new Set(M.p),new Set(M.s),ld,cab),t0=performance.now(),loop=t=>{avDraw(it,mv,phase(mv,t-t0));exRaf=requestAnimationFrame(loop)};
+ avDraw(it,mv,0);cancelAnimationFrame(exRaf);exRaf=requestAnimationFrame(loop);
+ const done=()=>{cancelAnimationFrame(exRaf);d.hidden=true;d.innerHTML=''};
+ $('#exiX').onclick=$('#exiNo').onclick=done;
+ if(pick)$('#exiSel').onclick=()=>{done();ACT.pTog({id})};
 }
 
 function openRedit(r){redit=r?clone(r):{id:null,name:'',items:[]};renderRedit()}
@@ -722,6 +925,7 @@ const ACT={
  pPart:d=>{pick.part=d.p;renderPick()},
  pEq:d=>{pick.eq=d.q;renderPick()},
  pTog:d=>{const i=pick.sel.indexOf(d.id);i<0?pick.sel.push(d.id):pick.sel.splice(i,1);renderPick()},
+ exInfo:d=>openExInfo(d.id),
  pickGo:()=>{if(pick.sel.length){const {cb,sel}=pick;pick=null;cb(sel)}},
  newEx:async()=>{
   const r=await askNewEx(pick&&pick.part!=='すべて'?pick.part:'胸',pick&&pick.eq!=='すべて'?pick.eq:'フリーウェイト');if(!r||!pick)return;
