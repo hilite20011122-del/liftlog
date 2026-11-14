@@ -1026,6 +1026,9 @@ document.addEventListener('change',async e=>{
   if(await ask('現在のデータを読み込んだデータで上書きしますか？',{ok:'上書き',danger:true})){await replaceAll(normalize(d));toast('読み込みました')}
  }
 });
+let selAll=null;
+document.addEventListener('focusin',e=>{const t=e.target;if(t.matches&&t.matches('.set input,#pf-height,#pf-weight,#pf-bf')){selAll=t;try{t.select()}catch(_){}setTimeout(()=>{try{if(document.activeElement===t)t.select()}catch(_){}},0)}});
+document.addEventListener('mouseup',e=>{if(selAll&&e.target===selAll)e.preventDefault();selAll=null});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&uref&&saveT)flush()});
 
 load().then(()=>{render();setInterval(tick,500);initAI()});
